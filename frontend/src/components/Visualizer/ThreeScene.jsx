@@ -243,7 +243,7 @@ const ThreeScene = () => {
     <div
       ref={mountRef}
       className="w-full h-full"
-      style={{ position: 'relative' }}
+      style={{ position: 'relative', pointerEvents: 'auto' }}
     />
   );
 };

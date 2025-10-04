@@ -141,7 +141,7 @@ const Visualizer = () => {
         </div>
 
         {/* Right: HUD Control Panel */}
-        <div className="bg-black/50 backdrop-blur-md border-l border-white/10 overflow-y-auto h-full">
+        <div className="bg-black/50 backdrop-blur-md border-l border-white/10 overflow-y-auto h-full relative z-10">
           <div className="p-6 space-y-6">
             <h2 className="text-2xl font-bold">Control Panel</h2>
             <SummaryCard />
