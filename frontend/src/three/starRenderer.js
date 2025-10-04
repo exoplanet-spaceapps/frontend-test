@@ -112,14 +112,18 @@ export function createStarField(relevantStars, otherStars = [], scoresByTid = {}
         const { x, y, z, depthFactor } = raDec2Cartesian(star.ra, star.dec);
         positions.push(x, y, z);
 
-        // Ultra-dim dark gray for minimal visibility
-        colors.push(0.15, 0.18, 0.2); // Extremely subtle dark gray
+        // Use OBAFGKM colors for background stars too, but dimmed
+        const color = getStarColor(star);
+        colors.push(color.r, color.g, color.b);
 
-        // Very small size to minimize prominence
-        sizes.push(1.2);
+        // Smaller size for background stars
+        const baseSize = calculateStarSize(star);
+        const depthScaledSize = baseSize * 0.4 * (0.6 + depthFactor * 0.8); // 40% of normal size
+        sizes.push(depthScaledSize);
 
-        // Extremely low opacity - barely perceptible backdrop
-        alphas.push(0.08);
+        // Very low opacity to show sphere shape without overwhelming
+        const depthAlpha = 0.12 + depthFactor * 0.08; // 0.12-0.20 alpha range (very dim)
+        alphas.push(depthAlpha);
 
         // Store depth factor
         depthFactors.push(depthFactor);
