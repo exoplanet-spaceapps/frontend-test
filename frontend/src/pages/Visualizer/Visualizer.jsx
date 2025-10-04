@@ -132,16 +132,16 @@ const Visualizer = () => {
   // Always show visualizer (demo mode if no data uploaded)
 
   return (
-    <div data-visualizer className="fixed inset-0 bg-black text-white overflow-hidden">
+    <div data-visualizer className="fixed inset-0 bg-black text-white">
       {/* Desktop Layout: Split View */}
       <div className="hidden lg:grid lg:grid-cols-[2fr,1fr] h-full w-full">
         {/* Left: 3D Visualization */}
-        <div className="relative h-full w-full bg-gradient-to-br from-black via-[#1f1925] to-black">
+        <div className="relative h-full w-full bg-gradient-to-br from-black via-[#1f1925] to-black overflow-hidden">
           {isDesktop && <ThreeScene />}
         </div>
 
         {/* Right: HUD Control Panel */}
-        <div className="bg-black/50 backdrop-blur-md border-l border-white/10 overflow-y-auto h-full relative z-10">
+        <div className="bg-black/50 backdrop-blur-md border-l border-white/10 overflow-y-scroll h-full relative z-10">
           <div className="p-6 space-y-6">
             <h2 className="text-2xl font-bold">Control Panel</h2>
             <SummaryCard />
