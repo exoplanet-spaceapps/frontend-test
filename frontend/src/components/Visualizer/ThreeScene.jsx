@@ -42,7 +42,7 @@ const ThreeScene = () => {
       0.1,
       1000
     );
-    camera.position.set(0, 0, 35); // Camera positioned to show full sphere on left side
+    camera.position.set(0, 5, 35); // Camera positioned to show full sphere on left side, slightly above
     camera.lookAt(0, 0, 0);
     cameraRef.current = camera;
 
