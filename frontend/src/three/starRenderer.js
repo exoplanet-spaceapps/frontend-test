@@ -86,7 +86,7 @@ export function createStarField(relevantStars, otherStars = [], scoresByTid = {}
     const alphas = [];
     const depthFactors = [];
 
-    // Add relevant stars (from uploaded data) - enhanced brightness and size for clear distinction
+    // Add relevant stars (from uploaded data) - MAXIMUM brightness and size for clear distinction
     relevantStars.forEach(star => {
         const { x, y, z, depthFactor } = raDec2Cartesian(star.ra, star.dec);
         positions.push(x, y, z);
@@ -95,13 +95,13 @@ export function createStarField(relevantStars, otherStars = [], scoresByTid = {}
         const color = getStarColor(star);
         colors.push(color.r, color.g, color.b);
 
-        // Significantly larger size to distinguish from background stars
+        // MUCH larger size - 2.2x multiplier for dominant presence
         const baseSize = calculateStarSize(star);
-        const depthScaledSize = baseSize * 1.5 * (0.6 + depthFactor * 0.8); // 1.5x multiplier (was 1x), 0.9-2.1x size range
+        const depthScaledSize = baseSize * 2.2 * (0.6 + depthFactor * 0.8); // 2.2x multiplier (was 1.5x), 1.32-3.08x size range
         sizes.push(depthScaledSize);
 
-        // Higher opacity for brighter appearance
-        const depthAlpha = 0.85 + depthFactor * 0.15; // 0.85-1.0 alpha range (was 0.7-1.0)
+        // MAXIMUM opacity - nearly full brightness
+        const depthAlpha = 0.95 + depthFactor * 0.05; // 0.95-1.0 alpha range (was 0.85-1.0)
         alphas.push(depthAlpha);
 
         // Store depth factor for shader
