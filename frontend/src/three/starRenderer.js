@@ -121,8 +121,8 @@ export function createStarField(relevantStars, otherStars = [], scoresByTid = {}
         const depthScaledSize = baseSize * 0.4 * (0.6 + depthFactor * 0.8); // 40% of normal size
         sizes.push(depthScaledSize);
 
-        // Very low opacity to show sphere shape without overwhelming
-        const depthAlpha = 0.12 + depthFactor * 0.08; // 0.12-0.20 alpha range (very dim)
+        // Low opacity to show sphere shape clearly with visible glow
+        const depthAlpha = 0.25 + depthFactor * 0.15; // 0.25-0.40 alpha range (visible but dim)
         alphas.push(depthAlpha);
 
         // Store depth factor

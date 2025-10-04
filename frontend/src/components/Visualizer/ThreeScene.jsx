@@ -42,8 +42,8 @@ const ThreeScene = () => {
       0.1,
       1000
     );
-    // Start camera from top-right (near user) off-screen for dramatic entrance
-    camera.position.set(200, 150, 150); // Right(+x), Top(+y), Near user(+z)
+    // Start camera from bottom-left far away, so sphere appears from top-right near user
+    camera.position.set(-250, -200, 300); // Far bottom-left, sphere will appear top-right
     camera.lookAt(0, 0, 0);
     cameraRef.current = camera;
 
@@ -123,7 +123,7 @@ const ThreeScene = () => {
         console.log('Star field created with uploaded data highlighted');
 
         // Trigger intro animation: sphere from top-right (near user) to center
-        const startPos = new THREE.Vector3(200, 150, 150); // Top-right, near user, off-screen
+        const startPos = new THREE.Vector3(-250, -200, 300); // Far bottom-left, sphere appears top-right
         const endPos = new THREE.Vector3(0, 0, 180); // Center of screen at proper viewing distance
 
         introAnimation(camera, controls, startPos, endPos, 2500, () => {
