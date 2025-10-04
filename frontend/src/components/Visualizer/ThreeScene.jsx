@@ -42,8 +42,8 @@ const ThreeScene = () => {
       0.1,
       1000
     );
-    // Start camera very close to user (beyond screen) for dramatic intro
-    camera.position.set(-25, 20, 5);
+    // Start camera WAY beyond top-left (off-screen) for dramatic entrance
+    camera.position.set(-80, 60, 30);
     camera.lookAt(0, 0, 0);
     cameraRef.current = camera;
 
@@ -69,7 +69,7 @@ const ThreeScene = () => {
     controls.enableZoom = true;
     controls.enablePan = false; // Disable panning to keep sphere centered
     controls.minDistance = 25; // Slightly larger than sphere radius (15)
-    controls.maxDistance = 100; // Reasonable max distance
+    controls.maxDistance = 150; // Increased to accommodate intro animation
     controls.rotateSpeed = 0.5;
     controls.target.set(0, 0, 0); // Always rotate around center
     controls.autoRotate = false; // Will be enabled after intro animation
@@ -122,8 +122,8 @@ const ThreeScene = () => {
 
         console.log('Star field created with uploaded data highlighted');
 
-        // Trigger intro animation: sphere from top-left (close) to center
-        const startPos = new THREE.Vector3(-25, 20, 15); // Top-left, close to user
+        // Trigger intro animation: sphere from WAY beyond top-left to center
+        const startPos = new THREE.Vector3(-80, 60, 30); // Far top-left, beyond visible screen
         const endPos = new THREE.Vector3(0, 0, 50); // Center of screen
 
         introAnimation(camera, controls, startPos, endPos, 2500, () => {
