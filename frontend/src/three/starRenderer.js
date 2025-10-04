@@ -13,13 +13,17 @@ import { estimateSpectralClass, getSpectralType, getSpectralColor } from '../uti
  * @param {number} radius - Distance from origin (default: 150 for celestial sphere)
  * @returns {Object} {x, y, z} Cartesian coordinates
  */
-export function raDec2Cartesian(ra, dec, radius = 15) {
+export function raDec2Cartesian(ra, dec, radius = 50) {
     const raRad = (ra * Math.PI) / 180;
     const decRad = (dec * Math.PI) / 180;
 
-    const x = radius * Math.cos(decRad) * Math.cos(raRad);
-    const y = radius * Math.sin(decRad);
-    const z = -radius * Math.cos(decRad) * Math.sin(raRad); // Negative z for correct orientation
+    // Add depth variation: stars distributed within sphere (not just surface)
+    const depthFactor = 0.7 + Math.random() * 0.3; // 70%-100% of radius for depth
+    const effectiveRadius = radius * depthFactor;
+
+    const x = effectiveRadius * Math.cos(decRad) * Math.cos(raRad);
+    const y = effectiveRadius * Math.sin(decRad);
+    const z = -effectiveRadius * Math.cos(decRad) * Math.sin(raRad);
 
     return { x, y, z };
 }
@@ -44,27 +48,27 @@ export function getStarColor(star) {
  * @returns {number} Star size
  */
 export function calculateStarSize(star) {
-    // Base size increased for better visibility
-    let size = 4.0;
+    // Base size for OBAFGKM classification (0.5-3.0 range)
+    let size = 1.5;
 
     if (star.magnitude && !isNaN(star.magnitude)) {
         // Brighter stars (lower magnitude) = larger size
         const magFactor = (15 - Math.min(star.magnitude, 15)) / 10;
-        size += magFactor * 2.0;
+        size += magFactor * 0.8;
     }
 
     if (star.depth && !isNaN(star.depth)) {
         const depthFactor = Math.log10(Math.abs(star.depth) + 1);
-        size += depthFactor * 1.0;
+        size += depthFactor * 0.3;
     }
 
     if (star.period && !isNaN(star.period)) {
         const periodFactor = Math.log10(star.period + 1) / 5;
-        size += periodFactor * 0.8;
+        size += periodFactor * 0.2;
     }
 
-    // Size range increased for better visibility
-    return Math.max(3.0, Math.min(size, 10.0));
+    // OBAFGKM size range: 0.5-3.0
+    return Math.max(0.5, Math.min(size, 3.0));
 }
 
 /**
@@ -133,8 +137,8 @@ export function createStarField(relevantStars, otherStars = [], scoresByTid = {}
                 vColor = color;
                 vAlpha = alpha;
                 vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-                // Increased size multiplier for more visible target stars
-                gl_PointSize = size * (1000.0 / length(mvPosition.xyz));
+                // Size attenuation for depth perception (larger sphere needs different scaling)
+                gl_PointSize = size * (300.0 / length(mvPosition.xyz));
                 gl_Position = projectionMatrix * mvPosition;
             }
         `,
