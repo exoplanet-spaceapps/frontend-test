@@ -102,14 +102,14 @@ export function createStarField(relevantStars, otherStars = [], scoresByTid = {}
         const { x, y, z } = raDec2Cartesian(star.ra, star.dec);
         positions.push(x, y, z);
 
-        // Very dim gray color for minimal background
-        colors.push(0.25, 0.28, 0.3); // Very subtle dim gray
+        // Ultra-dim dark gray for minimal visibility
+        colors.push(0.15, 0.18, 0.2); // Extremely subtle dark gray
 
-        // Small size to reduce prominence
-        sizes.push(1.5);
+        // Very small size to minimize prominence
+        sizes.push(1.2);
 
-        // Very low opacity - barely visible backdrop
-        alphas.push(0.15);
+        // Extremely low opacity - barely perceptible backdrop
+        alphas.push(0.08);
     });
 
     const geometry = new THREE.BufferGeometry();
@@ -133,8 +133,8 @@ export function createStarField(relevantStars, otherStars = [], scoresByTid = {}
                 vColor = color;
                 vAlpha = alpha;
                 vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-                // Larger size multiplier for higher resolution stars
-                gl_PointSize = size * (600.0 / length(mvPosition.xyz));
+                // Maximum size multiplier for ultra-high resolution target stars
+                gl_PointSize = size * (800.0 / length(mvPosition.xyz));
                 gl_Position = projectionMatrix * mvPosition;
             }
         `,
@@ -147,12 +147,12 @@ export function createStarField(relevantStars, otherStars = [], scoresByTid = {}
                 vec4 texColor = texture2D(pointTexture, gl_PointCoord);
                 float dist = distance(gl_PointCoord, vec2(0.5));
 
-                // Ultra-sharp star core with minimal glow for maximum clarity
-                float coreBrightness = 1.0 - smoothstep(0.0, 0.15, dist);
-                float outerGlow = 1.0 - smoothstep(0.1, 0.3, dist);
+                // Ultra-concentrated core for maximum sharpness
+                float coreBrightness = 1.0 - smoothstep(0.0, 0.1, dist);
+                float outerGlow = 1.0 - smoothstep(0.08, 0.25, dist);
 
-                // Increased brightness for sharper, clearer stars
-                vec3 finalColor = vColor * (coreBrightness * 15.0 + outerGlow * 3.0);
+                // Maximum brightness for crystal-clear target stars
+                vec3 finalColor = vColor * (coreBrightness * 20.0 + outerGlow * 4.0);
 
                 // Use vAlpha to control overall opacity (for dimming background stars)
                 float alpha = texColor.a * outerGlow * vAlpha;

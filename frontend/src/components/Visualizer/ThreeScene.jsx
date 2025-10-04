@@ -42,8 +42,8 @@ const ThreeScene = () => {
       0.1,
       1000
     );
-    // Start camera at top-left corner, close to user (for intro animation)
-    camera.position.set(-25, 20, 15);
+    // Start camera very close to user (beyond screen) for dramatic intro
+    camera.position.set(-25, 20, 5);
     camera.lookAt(0, 0, 0);
     cameraRef.current = camera;
 
