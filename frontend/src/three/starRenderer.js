@@ -102,14 +102,14 @@ export function createStarField(relevantStars, otherStars = [], scoresByTid = {}
         const { x, y, z } = raDec2Cartesian(star.ra, star.dec);
         positions.push(x, y, z);
 
-        // Subtle gray/blue color for background stars (to show sphere shape)
-        colors.push(0.4, 0.4, 0.5); // Subtle blue-gray
+        // Very subtle gray color for background stars (to show sphere shape)
+        colors.push(0.3, 0.3, 0.35); // Very subtle gray
 
         // Small but visible size
-        sizes.push(1.5);
+        sizes.push(1.2);
 
-        // Medium-low opacity for background (visible but not distracting)
-        alphas.push(0.35);
+        // Low opacity for background (visible sphere shape but not distracting)
+        alphas.push(0.15);
     });
 
     const geometry = new THREE.BufferGeometry();

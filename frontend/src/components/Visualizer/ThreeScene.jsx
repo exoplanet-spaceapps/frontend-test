@@ -37,12 +37,12 @@ const ThreeScene = () => {
 
     // Camera setup - positioned to view celestial sphere
     const camera = new THREE.PerspectiveCamera(
-      75,
+      60,
       mountRef.current.clientWidth / mountRef.current.clientHeight,
       0.1,
       1000
     );
-    camera.position.set(0, 0, 70); // Camera closer to see sphere immediately
+    camera.position.set(0, 0, 100); // Camera positioned to show full sphere on left side
     camera.lookAt(0, 0, 0);
     cameraRef.current = camera;
 
@@ -67,8 +67,8 @@ const ThreeScene = () => {
     controls.dampingFactor = 0.05;
     controls.enableZoom = true;
     controls.enablePan = false; // Disable panning to keep sphere centered
-    controls.minDistance = 40; // Slightly larger than sphere radius (30)
-    controls.maxDistance = 150; // Reasonable max distance
+    controls.minDistance = 50; // Slightly larger than sphere radius (30)
+    controls.maxDistance = 200; // Reasonable max distance
     controls.rotateSpeed = 0.5;
     controls.target.set(0, 0, 0); // Always rotate around center
     controls.autoRotate = false; // No auto rotation
@@ -158,7 +158,7 @@ const ThreeScene = () => {
 
           // Move camera to better view the selected star
           const direction = starPosition.clone().normalize();
-          const cameraPosition = direction.multiplyScalar(70); // Position camera outside sphere
+          const cameraPosition = direction.multiplyScalar(100); // Position camera outside sphere
 
           smoothCameraTransition(
             camera,
@@ -187,7 +187,7 @@ const ThreeScene = () => {
           const { x, y, z } = raDec2Cartesian(starData.ra, starData.dec);
           const starPosition = new THREE.Vector3(x, y, z);
           const direction = starPosition.clone().normalize();
-          const cameraPosition = direction.multiplyScalar(70);
+          const cameraPosition = direction.multiplyScalar(100);
 
           console.log(`Flying to star TID ${tid} at position:`, starPosition, `(RA: ${starData.ra}, DEC: ${starData.dec})`);
 
