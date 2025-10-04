@@ -97,19 +97,19 @@ export function createStarField(relevantStars, otherStars = [], scoresByTid = {}
         alphas.push(1.0);
     });
 
-    // Add background stars - highly visible to create clear sphere
+    // Add background stars - subtle backdrop to maintain sphere shape
     otherStars.forEach(star => {
         const { x, y, z } = raDec2Cartesian(star.ra, star.dec);
         positions.push(x, y, z);
 
-        // Very bright white color for maximum visibility
-        colors.push(1.0, 1.0, 1.0); // Pure white
+        // Dim gray-blue color for subtle background
+        colors.push(0.4, 0.45, 0.5); // Subtle gray-blue
 
-        // Larger size for crystal-clear sphere definition
-        sizes.push(3.5);
+        // Small size to reduce prominence
+        sizes.push(1.8);
 
-        // High opacity for solid, clear sphere appearance
-        alphas.push(0.8);
+        // Low opacity - visible sphere shape but not distracting
+        alphas.push(0.3);
     });
 
     const geometry = new THREE.BufferGeometry();
