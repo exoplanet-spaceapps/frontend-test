@@ -107,31 +107,31 @@ frontend-test/
 ### Installation
 
 ```bash
-# Clone the repository
-git clone https://github.com/YOUR-USERNAME/nasa-star-catalog.git
-cd nasa-star-catalog
+# 1. Clone the repository
+git clone https://github.com/exoplanet-spaceapps/frontend-test.git
+cd frontend-test
 
-# Install dependencies
+# 2. Install frontend dependencies
+cd frontend
 npm install
 ```
 
-### Data Preparation
+### Data Preparation (Optional)
+
+The project includes pre-processed data in `frontend/public/data/stars.json`. If you need to process raw data:
 
 ```bash
-# Navigate to scripts directory
+# From project root
 cd scripts
 
-# Install script dependencies
-npm install
-
-# Convert CSV to JSON (if needed)
+# Convert CSV to JSON (if you have raw data)
 npm run convert
 
-# Validate data
+# Validate data quality
 npm run validate
 
-# Return to root
-cd ..
+# Return to frontend directory
+cd ../frontend
 ```
 
 ## 🎮 Usage
@@ -139,14 +139,18 @@ cd ..
 ### Development Server
 
 ```bash
-# Start local development server
+# Make sure you're in the frontend directory
+cd frontend
+
+# Start Vite development server
 npm run dev
 ```
 
 This will:
-1. Start http-server on port 8080
-2. Automatically open http://localhost:8080 in your default browser
-3. Enable hot reloading for development
+1. Start Vite development server on port 5173
+2. Display: `Local: http://localhost:5173/frontend/`
+3. Enable Hot Module Replacement (HMR) for instant updates
+4. Open your browser automatically
 
 ### Building for Production
 
@@ -173,8 +177,17 @@ npm run preview
 ### Running Tests
 
 ```bash
-# Run all tests
+# From frontend directory
+cd frontend
+
+# Run tests with Vitest
 npm run test
+
+# Run tests with UI
+npm run test:ui
+
+# Run tests with coverage
+npm run test:coverage
 
 # Run linting
 npm run lint
@@ -183,9 +196,14 @@ npm run lint
 ### Deployment
 
 ```bash
-# Deploy to GitHub Pages
+# From frontend directory
+cd frontend
+
+# Deploy to GitHub Pages (builds and deploys automatically)
 npm run deploy
 ```
+
+The site will be deployed to: `https://exoplanet-spaceapps.github.io/frontend/`
 
 ## 🎯 How to Use the Application
 
