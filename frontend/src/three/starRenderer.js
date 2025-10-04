@@ -102,14 +102,14 @@ export function createStarField(relevantStars, otherStars = [], scoresByTid = {}
         const { x, y, z } = raDec2Cartesian(star.ra, star.dec);
         positions.push(x, y, z);
 
-        // Dim gray-blue color for subtle background
-        colors.push(0.4, 0.45, 0.5); // Subtle gray-blue
+        // Very dim gray color for minimal background
+        colors.push(0.25, 0.28, 0.3); // Very subtle dim gray
 
         // Small size to reduce prominence
-        sizes.push(1.8);
+        sizes.push(1.5);
 
-        // Low opacity - visible sphere shape but not distracting
-        alphas.push(0.3);
+        // Very low opacity - barely visible backdrop
+        alphas.push(0.15);
     });
 
     const geometry = new THREE.BufferGeometry();
@@ -133,8 +133,8 @@ export function createStarField(relevantStars, otherStars = [], scoresByTid = {}
                 vColor = color;
                 vAlpha = alpha;
                 vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-                // Smaller size multiplier for sharper, more defined stars
-                gl_PointSize = size * (400.0 / length(mvPosition.xyz));
+                // Larger size multiplier for higher resolution stars
+                gl_PointSize = size * (600.0 / length(mvPosition.xyz));
                 gl_Position = projectionMatrix * mvPosition;
             }
         `,
@@ -147,12 +147,12 @@ export function createStarField(relevantStars, otherStars = [], scoresByTid = {}
                 vec4 texColor = texture2D(pointTexture, gl_PointCoord);
                 float dist = distance(gl_PointCoord, vec2(0.5));
 
-                // Sharp, highly defined star points
-                float coreBrightness = 1.0 - smoothstep(0.0, 0.25, dist);
-                float outerGlow = 1.0 - smoothstep(0.15, 0.4, dist);
+                // Ultra-sharp star core with minimal glow for maximum clarity
+                float coreBrightness = 1.0 - smoothstep(0.0, 0.15, dist);
+                float outerGlow = 1.0 - smoothstep(0.1, 0.3, dist);
 
-                // Maximum brightness for clear visibility
-                vec3 finalColor = vColor * (coreBrightness * 10.0 + outerGlow * 2.0);
+                // Increased brightness for sharper, clearer stars
+                vec3 finalColor = vColor * (coreBrightness * 15.0 + outerGlow * 3.0);
 
                 // Use vAlpha to control overall opacity (for dimming background stars)
                 float alpha = texColor.a * outerGlow * vAlpha;
@@ -177,13 +177,13 @@ export function createStarField(relevantStars, otherStars = [], scoresByTid = {}
  */
 function createStarTexture() {
     const canvas = document.createElement('canvas');
-    canvas.width = 128;
-    canvas.height = 128;
+    canvas.width = 256;  // Doubled resolution for sharper stars
+    canvas.height = 256;
 
     const ctx = canvas.getContext('2d');
-    const center = 64;
+    const center = 128;  // Updated center point
 
-    const gradient = ctx.createRadialGradient(center, center, 0, center, center, 64);
+    const gradient = ctx.createRadialGradient(center, center, 0, center, center, 128);
     gradient.addColorStop(0, 'rgba(255, 255, 255, 1.0)');
     gradient.addColorStop(0.1, 'rgba(255, 255, 255, 0.9)');
     gradient.addColorStop(0.3, 'rgba(255, 255, 255, 0.6)');
@@ -191,11 +191,11 @@ function createStarTexture() {
     gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
 
     ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, 128, 128);
+    ctx.fillRect(0, 0, 256, 256);
 
     ctx.globalCompositeOperation = 'screen';
 
-    const hGradient = ctx.createLinearGradient(0, center, 128, center);
+    const hGradient = ctx.createLinearGradient(0, center, 256, center);
     hGradient.addColorStop(0, 'rgba(255, 255, 255, 0)');
     hGradient.addColorStop(0.45, 'rgba(255, 255, 255, 0.3)');
     hGradient.addColorStop(0.5, 'rgba(255, 255, 255, 0.6)');
@@ -203,9 +203,9 @@ function createStarTexture() {
     hGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
 
     ctx.fillStyle = hGradient;
-    ctx.fillRect(0, center - 3, 128, 6);
+    ctx.fillRect(0, center - 3, 256, 6);
 
-    const vGradient = ctx.createLinearGradient(center, 0, center, 128);
+    const vGradient = ctx.createLinearGradient(center, 0, center, 256);
     vGradient.addColorStop(0, 'rgba(255, 255, 255, 0)');
     vGradient.addColorStop(0.45, 'rgba(255, 255, 255, 0.3)');
     vGradient.addColorStop(0.5, 'rgba(255, 255, 255, 0.6)');
@@ -213,7 +213,7 @@ function createStarTexture() {
     vGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
 
     ctx.fillStyle = vGradient;
-    ctx.fillRect(center - 3, 0, 6, 128);
+    ctx.fillRect(center - 3, 0, 6, 256);
 
     const texture = new THREE.Texture(canvas);
     texture.needsUpdate = true;
