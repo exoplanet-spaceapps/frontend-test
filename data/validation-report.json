@@ -1,0 +1,175 @@
+{
+  "timestamp": "2025-10-04T10:16:50.668Z",
+  "summary": {
+    "totalRecords": 11979,
+    "validRecords": 11979,
+    "invalidRecords": 0,
+    "completeness": 100,
+    "errorRate": 0
+  },
+  "fieldCoverage": {
+    "label": {
+      "percentage": "100.00",
+      "present": 11979,
+      "missing": 0,
+      "total": 11979
+    },
+    "source": {
+      "percentage": "100.00",
+      "present": 11979,
+      "missing": 0,
+      "total": 11979
+    },
+    "toi": {
+      "percentage": "59.60",
+      "present": 7140,
+      "missing": 4839,
+      "total": 11979
+    },
+    "tid": {
+      "percentage": "59.60",
+      "present": 7140,
+      "missing": 4839,
+      "total": 11979
+    },
+    "target_id": {
+      "percentage": "100.00",
+      "present": 11979,
+      "missing": 0,
+      "total": 11979
+    },
+    "period": {
+      "percentage": "99.17",
+      "present": 11880,
+      "missing": 99,
+      "total": 11979
+    },
+    "depth": {
+      "percentage": "97.85",
+      "present": 11722,
+      "missing": 257,
+      "total": 11979
+    },
+    "duration": {
+      "percentage": "100.00",
+      "present": 11979,
+      "missing": 0,
+      "total": 11979
+    },
+    "kepid": {
+      "percentage": "40.40",
+      "present": 4839,
+      "missing": 7140,
+      "total": 11979
+    },
+    "ra": {
+      "percentage": "100.00",
+      "present": 11979,
+      "missing": 0,
+      "total": 11979
+    },
+    "dec": {
+      "percentage": "100.00",
+      "present": 11979,
+      "missing": 0,
+      "total": 11979
+    },
+    "coordinates_fetched": {
+      "percentage": "100.00",
+      "present": 11979,
+      "missing": 0,
+      "total": 11979
+    },
+    "catalog": {
+      "percentage": "100.00",
+      "present": 11979,
+      "missing": 0,
+      "total": 11979
+    },
+    "magnitude": {
+      "percentage": "100.00",
+      "present": 11978,
+      "missing": 0,
+      "total": 11978
+    },
+    "id": {
+      "percentage": "100.00",
+      "present": 11979,
+      "missing": 0,
+      "total": 11979
+    }
+  },
+  "catalogBreakdown": {
+    "TIC": 7140,
+    "KIC": 4839
+  },
+  "errors": [],
+  "warnings": [
+    "Star 0: Field 'kepid' is null/undefined",
+    "Star 1: Field 'kepid' is null/undefined",
+    "Star 2: Field 'kepid' is null/undefined",
+    "Star 3: Field 'kepid' is null/undefined",
+    "Star 4: Field 'kepid' is null/undefined",
+    "Star 5: Field 'kepid' is null/undefined",
+    "Star 6: Field 'kepid' is null/undefined",
+    "Star 7: Field 'kepid' is null/undefined",
+    "Star 8: Field 'kepid' is null/undefined",
+    "Star 9: Field 'kepid' is null/undefined",
+    "Star 10: Field 'kepid' is null/undefined",
+    "Star 11: Field 'kepid' is null/undefined",
+    "Star 12: Field 'kepid' is null/undefined",
+    "Star 13: Field 'kepid' is null/undefined",
+    "Star 14: Field 'kepid' is null/undefined",
+    "Star 15: Field 'kepid' is null/undefined",
+    "Star 16: Field 'kepid' is null/undefined",
+    "Star 17: Field 'kepid' is null/undefined",
+    "Star 18: Field 'kepid' is null/undefined",
+    "Star 19: Field 'kepid' is null/undefined",
+    "Star 20: Field 'kepid' is null/undefined",
+    "Star 21: Field 'kepid' is null/undefined",
+    "Star 22: Field 'kepid' is null/undefined",
+    "Star 23: Field 'kepid' is null/undefined",
+    "Star 24: Field 'kepid' is null/undefined",
+    "Star 25: Field 'kepid' is null/undefined",
+    "Star 26: Field 'kepid' is null/undefined",
+    "Star 27: Field 'kepid' is null/undefined",
+    "Star 28: Field 'kepid' is null/undefined",
+    "Star 29: Field 'kepid' is null/undefined",
+    "Star 30: Field 'kepid' is null/undefined",
+    "Star 31: Field 'kepid' is null/undefined",
+    "Star 32: Field 'kepid' is null/undefined",
+    "Star 33: Field 'kepid' is null/undefined",
+    "Star 34: Field 'kepid' is null/undefined",
+    "Star 35: Field 'kepid' is null/undefined",
+    "Star 36: Field 'kepid' is null/undefined",
+    "Star 37: Field 'kepid' is null/undefined",
+    "Star 38: Field 'kepid' is null/undefined",
+    "Star 39: Field 'kepid' is null/undefined",
+    "Star 40: Field 'kepid' is null/undefined",
+    "Star 41: Field 'kepid' is null/undefined",
+    "Star 42: Field 'kepid' is null/undefined",
+    "Star 43: Field 'kepid' is null/undefined",
+    "Star 44: Field 'kepid' is null/undefined",
+    "Star 45: Field 'kepid' is null/undefined",
+    "Star 46: Field 'kepid' is null/undefined",
+    "Star 47: Field 'kepid' is null/undefined",
+    "Star 48: Field 'kepid' is null/undefined",
+    "Star 49: Field 'kepid' is null/undefined"
+  ],
+  "qualityScore": {
+    "overall": 99.04,
+    "breakdown": {
+      "completeness": 60,
+      "coordinates": 30,
+      "fieldCoverage": 9.04
+    }
+  },
+  "readyForVisualization": true,
+  "recommendations": [
+    {
+      "severity": "info",
+      "issue": "Data quality is good",
+      "recommendation": "Proceed with visualization"
+    }
+  ]
+}
