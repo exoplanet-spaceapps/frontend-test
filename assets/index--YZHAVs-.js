@@ -3908,8 +3908,8 @@ void main() {
                 vColor = color;
                 vAlpha = alpha;
                 vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-                // Size multiplier increased for better visibility
-                gl_PointSize = size * (800.0 / length(mvPosition.xyz));
+                // Smaller size multiplier for sharper, more defined stars
+                gl_PointSize = size * (400.0 / length(mvPosition.xyz));
                 gl_Position = projectionMatrix * mvPosition;
             }
         `,fragmentShader:`
@@ -3921,12 +3921,12 @@ void main() {
                 vec4 texColor = texture2D(pointTexture, gl_PointCoord);
                 float dist = distance(gl_PointCoord, vec2(0.5));
 
-                // Sharp star points with clear definition
-                float coreBrightness = 1.0 - smoothstep(0.0, 0.15, dist);
-                float outerGlow = 1.0 - smoothstep(0.05, 0.4, dist);
+                // Tighter, sharper star points
+                float coreBrightness = 1.0 - smoothstep(0.0, 0.2, dist);
+                float outerGlow = 1.0 - smoothstep(0.1, 0.35, dist);
 
-                // Bright, crisp colors for clear star visibility
-                vec3 finalColor = vColor * (coreBrightness * 6.0 + outerGlow * 2.5);
+                // Crisp, focused star appearance
+                vec3 finalColor = vColor * (coreBrightness * 8.0 + outerGlow * 1.5);
 
                 // Use vAlpha to control overall opacity (for dimming background stars)
                 float alpha = texColor.a * outerGlow * vAlpha;
