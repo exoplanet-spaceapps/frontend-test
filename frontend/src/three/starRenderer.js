@@ -13,7 +13,7 @@ import { estimateSpectralClass, getSpectralType, getSpectralColor } from '../uti
  * @param {number} radius - Distance from origin (default: 150 for celestial sphere)
  * @returns {Object} {x, y, z} Cartesian coordinates
  */
-export function raDec2Cartesian(ra, dec, radius = 150) {
+export function raDec2Cartesian(ra, dec, radius = 100) {
     const raRad = (ra * Math.PI) / 180;
     const decRad = (dec * Math.PI) / 180;
 
