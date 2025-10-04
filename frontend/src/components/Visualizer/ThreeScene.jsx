@@ -24,6 +24,7 @@ const ThreeScene = () => {
   const setSelectedTid = useAppStore(state => state.setSelectedTid);
   const parsedData = useAppStore(state => state.parsedData);
   const scoresByTid = useAppStore(state => state.scoresByTid);
+  const candidates = useAppStore(state => state.candidates);
 
   useEffect(() => {
     if (!mountRef.current) return;
@@ -138,10 +139,17 @@ const ThreeScene = () => {
         const starData = currentStars[index];
 
         if (starData && starData.tid) {
-          setSelectedTid(starData.tid);
           console.log('Star clicked:', starData);
 
-          // Animate camera to star - very close
+          // Only show info panel for candidate stars
+          if (candidates.includes(starData.tid)) {
+            setSelectedTid(starData.tid);
+            console.log('Candidate star selected - showing info panel');
+          } else {
+            console.log('Non-candidate star clicked - camera animation only');
+          }
+
+          // Animate camera to star - very close (regardless of whether it's a candidate)
           const starPosition = new THREE.Vector3(
             intersects[0].point.x,
             intersects[0].point.y,

@@ -136,7 +136,7 @@ const Visualizer = () => {
       {/* Desktop Layout: Split View */}
       <div className="hidden lg:grid lg:grid-cols-[2fr,1fr] h-screen">
         {/* Left: 3D Visualization */}
-        <div className="relative bg-gradient-to-br from-black via-[#1f1925] to-black">
+        <div className="relative h-full bg-gradient-to-br from-black via-[#1f1925] to-black">
           {isDesktop && <ThreeScene />}
         </div>
 
