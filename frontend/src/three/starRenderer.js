@@ -121,8 +121,8 @@ export function createStarField(relevantStars, otherStars = [], scoresByTid = {}
         const depthScaledSize = baseSize * 0.4 * (0.6 + depthFactor * 0.8); // 40% of normal size
         sizes.push(depthScaledSize);
 
-        // Low opacity to show sphere shape clearly with visible glow
-        const depthAlpha = 0.25 + depthFactor * 0.15; // 0.25-0.40 alpha range (visible but dim)
+        // Medium opacity to show sphere shape clearly with visible glow
+        const depthAlpha = 0.45 + depthFactor * 0.25; // 0.45-0.70 alpha range (clearly visible)
         alphas.push(depthAlpha);
 
         // Store depth factor
@@ -174,8 +174,8 @@ export function createStarField(relevantStars, otherStars = [], scoresByTid = {}
                 float outerGlow = 1.0 - smoothstep(0.08, 0.18, dist);
 
                 // Brightness affected by depth: closer stars (higher vDepth) are brighter
-                float depthBrightness = 0.7 + vDepth * 0.6; // 0.7-1.3x brightness range
-                vec3 finalColor = vColor * (coreBrightness * 12.0 + outerGlow * 2.5) * depthBrightness;
+                float depthBrightness = 1.0 + vDepth * 0.8; // 1.0-1.8x brightness range (brighter)
+                vec3 finalColor = vColor * (coreBrightness * 18.0 + outerGlow * 4.0) * depthBrightness;
 
                 // Use vAlpha to control overall opacity (for dimming background stars)
                 float alpha = texColor.a * outerGlow * vAlpha;

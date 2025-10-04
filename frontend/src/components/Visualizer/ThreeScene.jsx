@@ -54,11 +54,11 @@ const ThreeScene = () => {
     mountRef.current.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
-    // Lighting - increased for better star visibility
-    const ambientLight = new THREE.AmbientLight(0x404040, 1.5);
+    // Lighting - significantly increased for better star visibility
+    const ambientLight = new THREE.AmbientLight(0x606060, 2.5);
     scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
     directionalLight.position.set(100, 100, 100);
     scene.add(directionalLight);
 
