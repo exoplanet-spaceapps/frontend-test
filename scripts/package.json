@@ -1,0 +1,14 @@
+{
+  "name": "nasa-star-data-processor",
+  "version": "1.0.0",
+  "description": "Data processing scripts for NASA exoplanet visualization",
+  "scripts": {
+    "convert": "node csv-to-json.js",
+    "fetch": "node fetch-coordinates.js",
+    "fetch-continue": "node fetch-coordinates.js",
+    "validate": "node validate-data.js"
+  },
+  "keywords": ["nasa", "exoplanet", "astronomy", "data-processing"],
+  "author": "",
+  "license": "MIT"
+}

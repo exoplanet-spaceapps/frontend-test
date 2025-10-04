@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Interactive 3D visualization of NASA star catalog data">
+    <title>NASA Star Catalog - 3D Visualization</title>
+    <link rel="stylesheet" href="../src/css/styles.css">
+    <link rel="stylesheet" href="../src/css/visualization.css">
+</head>
+<body>
+    <div id="loading-screen">
+        <div class="loader"></div>
+        <p>Loading Star Data...</p>
+    </div>
+
+    <div id="info-panel">
+        <h1>NASA Star Catalog Visualization</h1>
+        <div id="stats">
+            <p>Stars Loaded: <span id="star-count">0</span></p>
+            <p>FPS: <span id="fps">0</span></p>
+        </div>
+        <div id="controls-info">
+            <h3>Controls</h3>
+            <ul>
+                <li>Left Click + Drag: Rotate view</li>
+                <li>Right Click + Drag: Pan view</li>
+                <li>Scroll: Zoom in/out</li>
+                <li>Click Star: View details</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="star-details" class="hidden">
+        <button id="close-details">&times;</button>
+        <h2 id="star-name"></h2>
+        <div id="star-info"></div>
+    </div>
+
+    <canvas id="visualization-canvas"></canvas>
+
+    <!-- Three.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+    <!-- Application Scripts -->
+    <script type="module" src="../src/js/utils.js"></script>
+    <script type="module" src="../src/js/dataLoader.js"></script>
+    <script type="module" src="../src/js/starRenderer.js"></script>
+    <script type="module" src="../src/js/controls.js"></script>
+    <script type="module" src="../src/js/main.js"></script>
+</body>
+</html>

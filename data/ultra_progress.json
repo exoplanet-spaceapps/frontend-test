@@ -1,0 +1,11 @@
+{
+  "total": 11979,
+  "processed": 11979,
+  "withCoordinates": 7140,
+  "success": 6882,
+  "failed": 4839,
+  "duration": "40.6",
+  "speed": "10552",
+  "method": "ultra-parallel-batch",
+  "timestamp": "2025-10-04T09:53:43.026Z"
+}

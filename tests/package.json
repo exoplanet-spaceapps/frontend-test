@@ -1,0 +1,15 @@
+{
+  "name": "nasa-visualization-tests",
+  "version": "1.0.0",
+  "description": "Test suite for NASA exoplanet visualization",
+  "scripts": {
+    "test": "mocha --timeout 10000 './*.test.js'",
+    "test:watch": "mocha --watch --timeout 10000 './*.test.js'",
+    "test:coverage": "nyc mocha --timeout 10000 './*.test.js'"
+  },
+  "devDependencies": {
+    "mocha": "^10.2.0",
+    "chai": "^4.3.10",
+    "nyc": "^15.1.0"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "name": "nasa-star-catalog-visualization",
+  "version": "1.0.0",
+  "description": "Interactive 3D visualization of NASA star catalog data using Three.js",
+  "main": "src/js/main.js",
+  "scripts": {
+    "dev": "npx http-server public -p 8080 -o",
+    "build": "npm run copy-data",
+    "copy-data": "node scripts/copy-data.js",
+    "deploy": "npm run build && gh-pages -d public",
+    "lint": "eslint src/js/**/*.js",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YOUR-USERNAME/nasa-star-catalog.git"
+  },
+  "keywords": [
+    "nasa",
+    "stars",
+    "3d",
+    "visualization",
+    "threejs",
+    "astronomy"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "three": "^0.160.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.56.0",
+    "gh-pages": "^6.1.1",
+    "http-server": "^14.1.1",
+    "jest": "^29.7.0"
+  }
+}
