@@ -97,19 +97,19 @@ export function createStarField(relevantStars, otherStars = [], scoresByTid = {}
         alphas.push(1.0);
     });
 
-    // Add background stars - clear and visible to show sphere shape
+    // Add background stars - highly visible to create clear sphere
     otherStars.forEach(star => {
         const { x, y, z } = raDec2Cartesian(star.ra, star.dec);
         positions.push(x, y, z);
 
-        // Bright white/blue color for background stars
-        colors.push(0.8, 0.85, 1.0); // Bright bluish-white
+        // Very bright white color for maximum visibility
+        colors.push(1.0, 1.0, 1.0); // Pure white
 
-        // Medium size for clear visibility
-        sizes.push(2.5);
+        // Larger size for crystal-clear sphere definition
+        sizes.push(3.5);
 
-        // Higher opacity for clear star field
-        alphas.push(0.6);
+        // High opacity for solid, clear sphere appearance
+        alphas.push(0.8);
     });
 
     const geometry = new THREE.BufferGeometry();
@@ -147,12 +147,12 @@ export function createStarField(relevantStars, otherStars = [], scoresByTid = {}
                 vec4 texColor = texture2D(pointTexture, gl_PointCoord);
                 float dist = distance(gl_PointCoord, vec2(0.5));
 
-                // Tighter, sharper star points
-                float coreBrightness = 1.0 - smoothstep(0.0, 0.2, dist);
-                float outerGlow = 1.0 - smoothstep(0.1, 0.35, dist);
+                // Sharp, highly defined star points
+                float coreBrightness = 1.0 - smoothstep(0.0, 0.25, dist);
+                float outerGlow = 1.0 - smoothstep(0.15, 0.4, dist);
 
-                // Crisp, focused star appearance
-                vec3 finalColor = vColor * (coreBrightness * 8.0 + outerGlow * 1.5);
+                // Maximum brightness for clear visibility
+                vec3 finalColor = vColor * (coreBrightness * 10.0 + outerGlow * 2.0);
 
                 // Use vAlpha to control overall opacity (for dimming background stars)
                 float alpha = texColor.a * outerGlow * vAlpha;
