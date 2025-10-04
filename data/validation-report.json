@@ -1,11 +1,11 @@
 {
-  "timestamp": "2025-10-04T09:54:00.909Z",
+  "timestamp": "2025-10-04T10:16:50.668Z",
   "summary": {
     "totalRecords": 11979,
-    "validRecords": 7140,
-    "invalidRecords": 4839,
-    "completeness": 59.6,
-    "errorRate": 40.4
+    "validRecords": 11979,
+    "invalidRecords": 0,
+    "completeness": 100,
+    "errorRate": 0
   },
   "fieldCoverage": {
     "label": {
@@ -63,15 +63,15 @@
       "total": 11979
     },
     "ra": {
-      "percentage": "59.60",
-      "present": 7140,
-      "missing": 4839,
+      "percentage": "100.00",
+      "present": 11979,
+      "missing": 0,
       "total": 11979
     },
     "dec": {
-      "percentage": "59.60",
-      "present": 7140,
-      "missing": 4839,
+      "percentage": "100.00",
+      "present": 11979,
+      "missing": 0,
       "total": 11979
     },
     "coordinates_fetched": {
@@ -88,9 +88,9 @@
     },
     "magnitude": {
       "percentage": "100.00",
-      "present": 7140,
+      "present": 11978,
       "missing": 0,
-      "total": 7140
+      "total": 11978
     },
     "id": {
       "percentage": "100.00",
@@ -103,108 +103,7 @@
     "TIC": 7140,
     "KIC": 4839
   },
-  "errors": [
-    "Star 7140: Missing RA coordinate",
-    "Star 7140: Missing DEC coordinate",
-    "Star 7141: Missing RA coordinate",
-    "Star 7141: Missing DEC coordinate",
-    "Star 7142: Missing RA coordinate",
-    "Star 7142: Missing DEC coordinate",
-    "Star 7143: Missing RA coordinate",
-    "Star 7143: Missing DEC coordinate",
-    "Star 7144: Missing RA coordinate",
-    "Star 7144: Missing DEC coordinate",
-    "Star 7145: Missing RA coordinate",
-    "Star 7145: Missing DEC coordinate",
-    "Star 7146: Missing RA coordinate",
-    "Star 7146: Missing DEC coordinate",
-    "Star 7147: Missing RA coordinate",
-    "Star 7147: Missing DEC coordinate",
-    "Star 7148: Missing RA coordinate",
-    "Star 7148: Missing DEC coordinate",
-    "Star 7149: Missing RA coordinate",
-    "Star 7149: Missing DEC coordinate",
-    "Star 7150: Missing RA coordinate",
-    "Star 7150: Missing DEC coordinate",
-    "Star 7151: Missing RA coordinate",
-    "Star 7151: Missing DEC coordinate",
-    "Star 7152: Missing RA coordinate",
-    "Star 7152: Missing DEC coordinate",
-    "Star 7153: Missing RA coordinate",
-    "Star 7153: Missing DEC coordinate",
-    "Star 7154: Missing RA coordinate",
-    "Star 7154: Missing DEC coordinate",
-    "Star 7155: Missing RA coordinate",
-    "Star 7155: Missing DEC coordinate",
-    "Star 7156: Missing RA coordinate",
-    "Star 7156: Missing DEC coordinate",
-    "Star 7157: Missing RA coordinate",
-    "Star 7157: Missing DEC coordinate",
-    "Star 7158: Missing RA coordinate",
-    "Star 7158: Missing DEC coordinate",
-    "Star 7159: Missing RA coordinate",
-    "Star 7159: Missing DEC coordinate",
-    "Star 7160: Missing RA coordinate",
-    "Star 7160: Missing DEC coordinate",
-    "Star 7161: Missing RA coordinate",
-    "Star 7161: Missing DEC coordinate",
-    "Star 7162: Missing RA coordinate",
-    "Star 7162: Missing DEC coordinate",
-    "Star 7163: Missing RA coordinate",
-    "Star 7163: Missing DEC coordinate",
-    "Star 7164: Missing RA coordinate",
-    "Star 7164: Missing DEC coordinate",
-    "Star 7165: Missing RA coordinate",
-    "Star 7165: Missing DEC coordinate",
-    "Star 7166: Missing RA coordinate",
-    "Star 7166: Missing DEC coordinate",
-    "Star 7167: Missing RA coordinate",
-    "Star 7167: Missing DEC coordinate",
-    "Star 7168: Missing RA coordinate",
-    "Star 7168: Missing DEC coordinate",
-    "Star 7169: Missing RA coordinate",
-    "Star 7169: Missing DEC coordinate",
-    "Star 7170: Missing RA coordinate",
-    "Star 7170: Missing DEC coordinate",
-    "Star 7171: Missing RA coordinate",
-    "Star 7171: Missing DEC coordinate",
-    "Star 7172: Missing RA coordinate",
-    "Star 7172: Missing DEC coordinate",
-    "Star 7173: Missing RA coordinate",
-    "Star 7173: Missing DEC coordinate",
-    "Star 7174: Missing RA coordinate",
-    "Star 7174: Missing DEC coordinate",
-    "Star 7175: Missing RA coordinate",
-    "Star 7175: Missing DEC coordinate",
-    "Star 7176: Missing RA coordinate",
-    "Star 7176: Missing DEC coordinate",
-    "Star 7177: Missing RA coordinate",
-    "Star 7177: Missing DEC coordinate",
-    "Star 7178: Missing RA coordinate",
-    "Star 7178: Missing DEC coordinate",
-    "Star 7179: Missing RA coordinate",
-    "Star 7179: Missing DEC coordinate",
-    "Star 7180: Missing RA coordinate",
-    "Star 7180: Missing DEC coordinate",
-    "Star 7181: Missing RA coordinate",
-    "Star 7181: Missing DEC coordinate",
-    "Star 7182: Missing RA coordinate",
-    "Star 7182: Missing DEC coordinate",
-    "Star 7183: Missing RA coordinate",
-    "Star 7183: Missing DEC coordinate",
-    "Star 7184: Missing RA coordinate",
-    "Star 7184: Missing DEC coordinate",
-    "Star 7185: Missing RA coordinate",
-    "Star 7185: Missing DEC coordinate",
-    "Star 7186: Missing RA coordinate",
-    "Star 7186: Missing DEC coordinate",
-    "Star 7187: Missing RA coordinate",
-    "Star 7187: Missing DEC coordinate",
-    "Star 7188: Missing RA coordinate",
-    "Star 7188: Missing DEC coordinate",
-    "Star 7189: Missing RA coordinate",
-    "Star 7189: Missing DEC coordinate"
-  ],
+  "errors": [],
   "warnings": [
     "Star 0: Field 'kepid' is null/undefined",
     "Star 1: Field 'kepid' is null/undefined",
@@ -258,24 +157,19 @@
     "Star 49: Field 'kepid' is null/undefined"
   ],
   "qualityScore": {
-    "overall": 62.15,
+    "overall": 99.04,
     "breakdown": {
-      "completeness": 35.76,
-      "coordinates": 17.88,
-      "fieldCoverage": 8.51
+      "completeness": 60,
+      "coordinates": 30,
+      "fieldCoverage": 9.04
     }
   },
-  "readyForVisualization": false,
+  "readyForVisualization": true,
   "recommendations": [
     {
-      "severity": "high",
-      "issue": "Low data completeness",
-      "recommendation": "Review and fix coordinate validation errors before visualization"
-    },
-    {
-      "severity": "high",
-      "issue": "High error rate",
-      "recommendation": "Investigate data source quality and implement additional filtering"
+      "severity": "info",
+      "issue": "Data quality is good",
+      "recommendation": "Proceed with visualization"
     }
   ]
 }

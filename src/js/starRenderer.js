@@ -27,15 +27,15 @@ export function raDec2Cartesian(ra, dec, radius = 100) {
 }
 
 /**
- * Determine star color based on catalog type
- * @param {string} catalog - Catalog identifier (TIC or KIC)
+ * Determine star color based on exoplanet label
+ * @param {number} label - Exoplanet candidate label (1 = confirmed, 0 = false positive)
  * @returns {THREE.Color} Three.js color object
  */
-export function getStarColor(catalog) {
-    if (catalog && catalog.startsWith('TIC')) {
-        return new THREE.Color(0x4488ff); // Blue for TESS
-    } else if (catalog && catalog.startsWith('KIC')) {
-        return new THREE.Color(0xffdd44); // Yellow for Kepler
+export function getStarColor(label) {
+    if (label === 1) {
+        return new THREE.Color(0x00b4ff); // Bright blue for confirmed exoplanet candidates
+    } else if (label === 0) {
+        return new THREE.Color(0xff8800); // Dark orange for false positives
     } else {
         return new THREE.Color(0x8888ff); // Default purple for unknown
     }
@@ -89,8 +89,8 @@ export function createStarField(starData) {
         const { x, y, z } = raDec2Cartesian(star.ra, star.dec);
         positions.push(x, y, z);
 
-        // Determine color based on catalog
-        const color = getStarColor(star.catalog);
+        // Determine color based on exoplanet label
+        const color = getStarColor(star.label);
         colors.push(color.r, color.g, color.b);
 
         // Calculate size based on properties
@@ -127,12 +127,23 @@ export function createStarField(starData) {
 
             void main() {
                 vec4 texColor = texture2D(pointTexture, gl_PointCoord);
-                gl_FragColor = vec4(vColor, 1.0) * texColor;
 
-                // Add glow effect
+                // Enhanced glow effect
                 float dist = distance(gl_PointCoord, vec2(0.5));
-                float alpha = 1.0 - smoothstep(0.3, 0.5, dist);
-                gl_FragColor.a *= alpha;
+
+                // Core brightness
+                float coreBrightness = 1.0 - smoothstep(0.0, 0.3, dist);
+
+                // Outer glow with falloff
+                float outerGlow = 1.0 - smoothstep(0.2, 0.5, dist);
+
+                // Combine effects
+                vec3 finalColor = vColor * (coreBrightness * 1.5 + outerGlow * 0.8);
+
+                // Apply texture and calculate alpha
+                float alpha = texColor.a * outerGlow;
+
+                gl_FragColor = vec4(finalColor, alpha);
             }
         `,
         transparent: true,
@@ -149,25 +160,52 @@ export function createStarField(starData) {
 }
 
 /**
- * Create star texture for point sprite
+ * Create star texture for point sprite with enhanced glow and sparkle
  * @returns {THREE.Texture} Texture for star rendering
  */
 function createStarTexture() {
     const canvas = document.createElement('canvas');
-    canvas.width = 64;
-    canvas.height = 64;
+    canvas.width = 128;
+    canvas.height = 128;
 
     const ctx = canvas.getContext('2d');
+    const center = 64;
 
-    // Create radial gradient for star glow
-    const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
-    gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
-    gradient.addColorStop(0.2, 'rgba(255, 255, 255, 0.8)');
-    gradient.addColorStop(0.4, 'rgba(255, 255, 255, 0.4)');
+    // Create main radial gradient for star core
+    const gradient = ctx.createRadialGradient(center, center, 0, center, center, 64);
+    gradient.addColorStop(0, 'rgba(255, 255, 255, 1.0)');
+    gradient.addColorStop(0.1, 'rgba(255, 255, 255, 0.9)');
+    gradient.addColorStop(0.3, 'rgba(255, 255, 255, 0.6)');
+    gradient.addColorStop(0.6, 'rgba(255, 255, 255, 0.2)');
     gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
 
     ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, 64, 64);
+    ctx.fillRect(0, 0, 128, 128);
+
+    // Add cross-shaped star flare
+    ctx.globalCompositeOperation = 'screen';
+
+    // Horizontal flare
+    const hGradient = ctx.createLinearGradient(0, center, 128, center);
+    hGradient.addColorStop(0, 'rgba(255, 255, 255, 0)');
+    hGradient.addColorStop(0.45, 'rgba(255, 255, 255, 0.3)');
+    hGradient.addColorStop(0.5, 'rgba(255, 255, 255, 0.6)');
+    hGradient.addColorStop(0.55, 'rgba(255, 255, 255, 0.3)');
+    hGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+    ctx.fillStyle = hGradient;
+    ctx.fillRect(0, center - 3, 128, 6);
+
+    // Vertical flare
+    const vGradient = ctx.createLinearGradient(center, 0, center, 128);
+    vGradient.addColorStop(0, 'rgba(255, 255, 255, 0)');
+    vGradient.addColorStop(0.45, 'rgba(255, 255, 255, 0.3)');
+    vGradient.addColorStop(0.5, 'rgba(255, 255, 255, 0.6)');
+    vGradient.addColorStop(0.55, 'rgba(255, 255, 255, 0.3)');
+    vGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+    ctx.fillStyle = vGradient;
+    ctx.fillRect(center - 3, 0, 6, 128);
 
     const texture = new THREE.Texture(canvas);
     texture.needsUpdate = true;

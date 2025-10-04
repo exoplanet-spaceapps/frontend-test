@@ -3,6 +3,7 @@
  * Handles camera flight animations with easing
  */
 
+import * as THREE from 'three';
 import { easeInOutCubic } from '../utils/easing';
 
 /**
@@ -68,7 +69,7 @@ export function flyCameraToStar(camera, starPosition, distance = 20, duration = 
 }
 
 /**
- * Smooth camera transition with controls update
+ * Smooth camera transition with controls update (along sphere surface)
  * @param {THREE.Camera} camera - Three.js camera
  * @param {OrbitControls} controls - OrbitControls instance
  * @param {THREE.Vector3} targetPosition - Target camera position
@@ -82,6 +83,13 @@ export function smoothCameraTransition(camera, controls, targetPosition, targetL
     const startTarget = controls.target.clone();
     const startTime = performance.now();
 
+    // Calculate sphere radius (distance from origin)
+    const radius = startPosition.length();
+
+    // Normalize vectors for spherical interpolation
+    const startDir = startPosition.clone().normalize();
+    const endDir = targetPosition.clone().normalize();
+
     let animationFrameId = null;
 
     const animate = (currentTime) => {
@@ -89,17 +97,42 @@ export function smoothCameraTransition(camera, controls, targetPosition, targetL
         const progress = Math.min(elapsed / duration, 1);
         const easedProgress = easeInOutCubic(progress);
 
-        // Interpolate camera position
-        camera.position.lerpVectors(startPosition, targetPosition, easedProgress);
+        // Spherical linear interpolation (slerp) for smooth arc along sphere surface
+        const angle = startDir.angleTo(endDir);
+        const sinAngle = Math.sin(angle);
 
-        // Interpolate controls target
+        let newPosition;
+        if (sinAngle < 0.001) {
+            // Vectors are nearly parallel, use linear interpolation
+            newPosition = new THREE.Vector3().lerpVectors(startPosition, targetPosition, easedProgress);
+        } else {
+            // Slerp for smooth arc along sphere
+            const a = Math.sin((1 - easedProgress) * angle) / sinAngle;
+            const b = Math.sin(easedProgress * angle) / sinAngle;
+
+            newPosition = new THREE.Vector3(
+                a * startDir.x + b * endDir.x,
+                a * startDir.y + b * endDir.y,
+                a * startDir.z + b * endDir.z
+            ).normalize().multiplyScalar(radius);
+        }
+
+        camera.position.copy(newPosition);
+
+        // Interpolate controls target (look-at point)
         controls.target.lerpVectors(startTarget, targetLookAt, easedProgress);
         controls.update();
 
         if (progress < 1) {
             animationFrameId = requestAnimationFrame(animate);
-        } else if (onComplete) {
-            onComplete();
+        } else {
+            // Reset target to center when animation completes to keep sphere centered
+            controls.target.set(0, 0, 0);
+            controls.update();
+
+            if (onComplete) {
+                onComplete();
+            }
         }
     };
 

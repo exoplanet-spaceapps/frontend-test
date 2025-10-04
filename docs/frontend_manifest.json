@@ -1,281 +1,152 @@
-{
-  "generated": "2025-10-04T11:20:00.000Z",
-  "project": "frontend",
-  "rootPath": "C:\\Users\\thc1006\\Desktop\\NASA\\frontend-test\\frontend",
-  "totalFiles": 35,
-  "totalSize": 65532951,
-  "techStack": {
-    "framework": "React 19.1.1",
-    "buildTool": "Vite 7.1.7",
-    "styling": "Tailwind CSS 3.3.6",
-    "animations": "AOS 2.3.4",
-    "icons": "React Icons 4.12.0",
-    "language": "JavaScript (JSX)",
-    "deployment": "GitHub Pages"
+[
+  {
+    "path": "src/App.css",
+    "size": 648,
+    "type": "css"
   },
-  "structure": {
-    "src": {
-      "components": [
-        "DataPortal",
-        "Footer",
-        "Hero",
-        "HeroCard",
-        "Navbar",
-        "Rapidscat",
-        "Satelite"
-      ],
-      "assets": [
-        "images (PNG, JPG)",
-        "videos (MP4)",
-        "icons (SVG)",
-        "animations (GIF)"
-      ],
-      "styles": [
-        "App.css",
-        "index.css"
-      ],
-      "entry": [
-        "main.jsx",
-        "App.jsx"
-      ]
-    },
-    "config": [
-      "vite.config.js",
-      "tailwind.config.js",
-      "postcss.config.js",
-      "eslint.config.js"
-    ],
-    "sample_data": [
-      "sample.json"
-    ],
-    "public": [
-      "vite.svg"
-    ]
+  {
+    "path": "src/App.jsx",
+    "size": 2170,
+    "type": "jsx"
   },
-  "files": [
-    {
-      "path": "./.gitignore",
-      "size": 277,
-      "type": "config",
-      "category": "version_control"
-    },
-    {
-      "path": "./eslint.config.js",
-      "size": 792,
-      "type": "js",
-      "category": "config"
-    },
-    {
-      "path": "./index.html",
-      "size": 380,
-      "type": "html",
-      "category": "entry"
-    },
-    {
-      "path": "./package.json",
-      "size": 938,
-      "type": "json",
-      "category": "config"
-    },
-    {
-      "path": "./package-lock.json",
-      "size": 159416,
-      "type": "json",
-      "category": "dependency"
-    },
-    {
-      "path": "./postcss.config.js",
-      "size": 86,
-      "type": "js",
-      "category": "config"
-    },
-    {
-      "path": "./public/vite.svg",
-      "size": 1497,
-      "type": "svg",
-      "category": "asset"
-    },
-    {
-      "path": "./README.md",
-      "size": 1173,
-      "type": "md",
-      "category": "doc"
-    },
-    {
-      "path": "./sample_data/README.md",
-      "size": 112,
-      "type": "md",
-      "category": "doc"
-    },
-    {
-      "path": "./sample_data/sample.json",
-      "size": 12,
-      "type": "json",
-      "category": "data"
-    },
-    {
-      "path": "./src/App.css",
-      "size": 648,
-      "type": "css",
-      "category": "style"
-    },
-    {
-      "path": "./src/App.jsx",
-      "size": 1546,
-      "type": "jsx",
-      "category": "component"
-    },
-    {
-      "path": "./src/assets/7a6b9e46-dbf8-4c15-8e0a-beb45cb9ec4a-removebg-preview.png",
-      "size": 116619,
-      "type": "png",
-      "category": "asset"
-    },
-    {
-      "path": "./src/assets/earth-bg.mp4",
-      "size": 1634680,
-      "type": "mp4",
-      "category": "asset"
-    },
-    {
-      "path": "./src/assets/GSFC_20190627_TESS_m13223_L98-59b_Full_Rotation~orig.mp4",
-      "size": 58607706,
-      "type": "mp4",
-      "category": "asset"
-    },
-    {
-      "path": "./src/assets/logo.png",
-      "size": 18728,
-      "type": "png",
-      "category": "asset"
-    },
-    {
-      "path": "./src/assets/moon-surface-hd.png",
-      "size": 616512,
-      "type": "png",
-      "category": "asset"
-    },
-    {
-      "path": "./src/assets/react.svg",
-      "size": 4126,
-      "type": "svg",
-      "category": "asset"
-    },
-    {
-      "path": "./src/assets/satelite1.jpg",
-      "size": 19580,
-      "type": "jpg",
-      "category": "asset"
-    },
-    {
-      "path": "./src/assets/satelite2.jpg",
-      "size": 67793,
-      "type": "jpg",
-      "category": "asset"
-    },
-    {
-      "path": "./src/assets/unnamed-Photoroom.png",
-      "size": 95935,
-      "type": "png",
-      "category": "asset"
-    },
-    {
-      "path": "./src/assets/wave Gif.gif",
-      "size": 3804061,
-      "type": "gif",
-      "category": "asset"
-    },
-    {
-      "path": "./src/assets/wave.jpg",
-      "size": 6441,
-      "type": "jpg",
-      "category": "asset"
-    },
-    {
-      "path": "./src/components/DataPortal/DataPortal.jsx",
-      "size": 6901,
-      "type": "jsx",
-      "category": "component"
-    },
-    {
-      "path": "./src/components/Footer/Footer.jsx",
-      "size": 229,
-      "type": "jsx",
-      "category": "component"
-    },
-    {
-      "path": "./src/components/Footer/Footer5.jsx",
-      "size": 4635,
-      "type": "jsx",
-      "category": "component"
-    },
-    {
-      "path": "./src/components/Hero/Hero.jsx",
-      "size": 1344,
-      "type": "jsx",
-      "category": "component"
-    },
-    {
-      "path": "./src/components/HeroCard/HeroCard.jsx",
-      "size": 2285,
-      "type": "jsx",
-      "category": "component"
-    },
-    {
-      "path": "./src/components/Navbar/Navbar.jsx",
-      "size": 978,
-      "type": "jsx",
-      "category": "component"
-    },
-    {
-      "path": "./src/components/Rapidscat/Rapidscat.jsx",
-      "size": 1967,
-      "type": "jsx",
-      "category": "component"
-    },
-    {
-      "path": "./src/components/Satelite/Satelite.jsx",
-      "size": 1963,
-      "type": "jsx",
-      "category": "component"
-    },
-    {
-      "path": "./src/index.css",
-      "size": 162,
-      "type": "css",
-      "category": "style"
-    },
-    {
-      "path": "./src/main.jsx",
-      "size": 239,
-      "type": "jsx",
-      "category": "entry"
-    },
-    {
-      "path": "./tailwind.config.js",
-      "size": 422,
-      "type": "js",
-      "category": "config"
-    },
-    {
-      "path": "./vite.config.js",
-      "size": 190,
-      "type": "js",
-      "category": "config"
-    }
-  ],
-  "missingComponents": {
-    "router": "No React Router - using simple view state",
-    "stateManagement": "No Zustand/Redux - using local useState",
-    "threeJS": "No Three.js or R3F installed",
-    "testing": "No Vitest or testing library configured"
+  {
+    "path": "src/components/DataPortal/DataPortal.jsx",
+    "size": 9087,
+    "type": "jsx"
   },
-  "notes": [
-    "Current navigation uses view state switching ('landing' <-> 'data')",
-    "DataPortal component exists but lacks 'Next Step' button to visualizer",
-    "No 3D visualization components present",
-    "AOS animation library already integrated (duration: 1200ms)",
-    "Dark theme with primary: #000000, secondary: #1f1925",
-    "GitHub Pages deployment configured with base: '/frontend/'"
-  ]
-}
+  {
+    "path": "src/components/Footer/Footer.jsx",
+    "size": 229,
+    "type": "jsx"
+  },
+  {
+    "path": "src/components/Footer/Footer5.jsx",
+    "size": 4635,
+    "type": "jsx"
+  },
+  {
+    "path": "src/components/Hero/Hero.jsx",
+    "size": 1425,
+    "type": "jsx"
+  },
+  {
+    "path": "src/components/HeroCard/HeroCard.jsx",
+    "size": 2285,
+    "type": "jsx"
+  },
+  {
+    "path": "src/components/Navbar/Navbar.jsx",
+    "size": 978,
+    "type": "jsx"
+  },
+  {
+    "path": "src/components/Rapidscat/Rapidscat.jsx",
+    "size": 1967,
+    "type": "jsx"
+  },
+  {
+    "path": "src/components/Satelite/Satelite.jsx",
+    "size": 1963,
+    "type": "jsx"
+  },
+  {
+    "path": "src/components/Visualizer/CandidatesList.jsx",
+    "size": 3844,
+    "type": "jsx"
+  },
+  {
+    "path": "src/components/Visualizer/StarInfoPanel.jsx",
+    "size": 6395,
+    "type": "jsx"
+  },
+  {
+    "path": "src/components/Visualizer/SummaryCard.jsx",
+    "size": 3237,
+    "type": "jsx"
+  },
+  {
+    "path": "src/components/Visualizer/ThreeScene.jsx",
+    "size": 9300,
+    "type": "jsx"
+  },
+  {
+    "path": "src/components/Visualizer/ThresholdControl.jsx",
+    "size": 3107,
+    "type": "jsx"
+  },
+  {
+    "path": "src/index.css",
+    "size": 587,
+    "type": "css"
+  },
+  {
+    "path": "src/main.jsx",
+    "size": 355,
+    "type": "jsx"
+  },
+  {
+    "path": "src/pages/Visualizer/Visualizer.jsx",
+    "size": 3056,
+    "type": "jsx"
+  },
+  {
+    "path": "src/setupTests.js",
+    "size": 50,
+    "type": "js"
+  },
+  {
+    "path": "src/state/useAppStore.js",
+    "size": 3078,
+    "type": "js"
+  },
+  {
+    "path": "src/three/cameraAnimations.js",
+    "size": 4543,
+    "type": "js"
+  },
+  {
+    "path": "src/three/dataLoader.js",
+    "size": 5421,
+    "type": "js"
+  },
+  {
+    "path": "src/three/starRenderer.js",
+    "size": 8997,
+    "type": "js"
+  },
+  {
+    "path": "src/utils/easing.js",
+    "size": 1585,
+    "type": "js"
+  },
+  {
+    "path": "src/utils/easing.test.js",
+    "size": 1545,
+    "type": "js"
+  },
+  {
+    "path": "src/utils/parseFile.js",
+    "size": 1390,
+    "type": "js"
+  },
+  {
+    "path": "src/utils/parseFile.test.js",
+    "size": 1312,
+    "type": "js"
+  },
+  {
+    "path": "src/utils/probability.js",
+    "size": 1975,
+    "type": "js"
+  },
+  {
+    "path": "src/utils/probability.test.js",
+    "size": 1346,
+    "type": "js"
+  },
+  {
+    "path": "src/utils/spectralClass.js",
+    "size": 4272,
+    "type": "js"
+  }
+]

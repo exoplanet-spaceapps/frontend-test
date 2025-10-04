@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useAppStore from "../../state/useAppStore";
 import { parseFile } from "../../utils/parseFile";
@@ -7,9 +7,17 @@ import { scoreForTarget } from "../../utils/probability";
 const DataPortal = () => {
   const navigate = useNavigate();
   const processFile = useAppStore(state => state.processFile);
+  const phase = useAppStore(state => state.phase);
   const csvInputRef = useRef(null);
   const datInputRef = useRef(null);
   const [uploadState, setUploadState] = useState({ status: "idle" });
+
+  // Auto-navigate to visualizer when analysis is done
+  useEffect(() => {
+    if (phase === 'done') {
+      navigate('/visualizer');
+    }
+  }, [phase, navigate]);
 
   const handleUploadClick = (ref) => {
     if (!ref.current) {
@@ -185,7 +193,7 @@ const DataPortal = () => {
             {uploadState.message}
           </div>
         )}
-        {uploadState.status === "success" && (
+        {uploadState.status === "success" && phase !== 'analyzing' && (
           <div
             className="bg-emerald-500/10 border border-emerald-400/40 text-emerald-100 rounded-lg p-4 space-y-3"
             data-aos="fade-up"
@@ -208,12 +216,39 @@ const DataPortal = () => {
                 {uploadState.preview || "No preview available."}
               </pre>
             </div>
-            <button
-              onClick={() => navigate('/visualizer')}
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg transition mt-4"
-            >
-              Next Step: Visualize →
-            </button>
+          </div>
+        )}
+        {phase === 'analyzing' && (
+          <div
+            className="bg-blue-500/10 border border-blue-400/40 text-blue-100 rounded-lg p-6 space-y-4"
+            data-aos="fade-up"
+            data-aos-delay="250"
+          >
+            <div className="flex items-center gap-4">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-400"></div>
+              <div className="flex-1">
+                <h3 className="text-lg font-bold mb-2">AI Analysis in Progress</h3>
+                <p className="text-sm text-blue-200/80">
+                  Analyzing light curve patterns and calculating exoplanet probabilities...
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex justify-between text-xs text-blue-300/70">
+                <span>Processing data points</span>
+                <span>75%</span>
+              </div>
+              <div className="w-full bg-blue-900/30 rounded-full h-2 overflow-hidden">
+                <div className="bg-gradient-to-r from-blue-500 to-cyan-400 h-full animate-pulse" style={{width: '75%'}}></div>
+              </div>
+            </div>
+
+            <div className="text-xs text-blue-300/60 space-y-1">
+              <p>Parsed {uploadState.rowCount} rows</p>
+              <p>Extracted features from light curves</p>
+              <p className="animate-pulse">→ Computing probability scores...</p>
+            </div>
           </div>
         )}
       </div>

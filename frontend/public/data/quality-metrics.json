@@ -1,0 +1,41 @@
+{
+  "timestamp": "2025-10-04T09:35:24.798Z",
+  "qualityScore": 7.55,
+  "dataCompleteness": 0,
+  "errorRate": 100,
+  "totalRecords": 11979,
+  "validRecords": 0,
+  "invalidRecords": 11979,
+  "catalogDistribution": {
+    "TIC": 7140,
+    "KIC": 4839
+  },
+  "criticalFieldCoverage": {
+    "ra": 0.42,
+    "dec": 0.42,
+    "id": 0
+  },
+  "readyForVisualization": false,
+  "recommendations": [
+    {
+      "severity": "high",
+      "issue": "Low data completeness",
+      "recommendation": "Review and fix coordinate validation errors before visualization"
+    },
+    {
+      "severity": "high",
+      "issue": "High error rate",
+      "recommendation": "Investigate data source quality and implement additional filtering"
+    },
+    {
+      "severity": "critical",
+      "issue": "Critical field 'ra' has low coverage (0.42%)",
+      "recommendation": "This field is essential for visualization - investigate data source"
+    },
+    {
+      "severity": "critical",
+      "issue": "Critical field 'dec' has low coverage (0.42%)",
+      "recommendation": "This field is essential for visualization - investigate data source"
+    }
+  ]
+}

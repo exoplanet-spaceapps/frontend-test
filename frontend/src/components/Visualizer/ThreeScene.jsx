@@ -4,6 +4,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import useAppStore from '../../state/useAppStore';
 import { createStarField } from '../../three/starRenderer';
 import { smoothCameraTransition } from '../../three/cameraAnimations';
+import { estimateSpectralClass, getSpectralType } from '../../utils/spectralClass';
 
 /**
  * ThreeScene Component
@@ -33,14 +34,14 @@ const ThreeScene = () => {
     scene.fog = new THREE.FogExp2(0x000000, 0.001);
     sceneRef.current = scene;
 
-    // Camera setup
+    // Camera setup - positioned to view celestial sphere
     const camera = new THREE.PerspectiveCamera(
       60,
       mountRef.current.clientWidth / mountRef.current.clientHeight,
       0.1,
       1000
     );
-    camera.position.set(0, 50, 150);
+    camera.position.set(0, 0, 300); // Camera outside looking at star sphere
     camera.lookAt(0, 0, 0);
     cameraRef.current = camera;
 
@@ -51,20 +52,26 @@ const ThreeScene = () => {
     mountRef.current.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
-    // Lighting
-    const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
+    // Lighting - increased for better star visibility
+    const ambientLight = new THREE.AmbientLight(0x404040, 1.5);
     scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.3);
-    directionalLight.position.set(50, 50, 50);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
+    directionalLight.position.set(100, 100, 100);
     scene.add(directionalLight);
 
-    // OrbitControls
+    // OrbitControls - fixed center rotation
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
-    controls.minDistance = 50;
-    controls.maxDistance = 300;
+    controls.enableZoom = true;
+    controls.enablePan = false; // Disable panning to keep sphere centered
+    controls.minDistance = 150;
+    controls.maxDistance = 500;
+    controls.rotateSpeed = 0.5;
+    controls.target.set(0, 0, 0); // Always rotate around center
+    controls.autoRotate = false; // No auto rotation
+    controls.screenSpacePanning = false; // Ensure no screen space panning
     controlsRef.current = controls;
 
     // Raycaster for star selection
@@ -72,23 +79,47 @@ const ThreeScene = () => {
     raycaster.params.Points.threshold = 2;
     raycasterRef.current = raycaster;
 
-    // Create star field if data exists
-    if (parsedData.length > 0) {
-      const starData = parsedData.map(item => ({
-        ra: Math.random() * 360, // TODO: Use real RA from TID lookup
-        dec: (Math.random() - 0.5) * 180, // TODO: Use real DEC from TID lookup
-        tid: item.tid,
-        label: scoresByTid[item.tid] >= 80 ? 1 : 0,
-        period: item.features[1] || null,
-        depth: item.features[2] || null,
-        magnitude: item.features[3] || null,
-        catalog: `TID${item.tid}`
-      }));
+    // Load star data from stars.json
+    fetch('/frontend/data/stars.json')
+      .then(res => res.json())
+      .then(starData => {
+        console.log(`Loaded ${starData.length} stars from stars.json`);
 
-      const starField = createStarField(starData);
-      scene.add(starField);
-      starFieldRef.current = starField;
-    }
+        // Get uploaded TIDs from parsedData
+        const uploadedTids = parsedData.map(d => d.tid).filter(Boolean);
+        console.log(`Uploaded TIDs: ${uploadedTids.length}`, uploadedTids);
+
+        let relevantStars, otherStars;
+
+        if (uploadedTids.length > 0) {
+          // User uploaded data: show only uploaded stars highlighted, dim others
+          relevantStars = starData.filter(star => uploadedTids.includes(star.tid));
+          otherStars = starData.filter(star => !uploadedTids.includes(star.tid));
+
+          console.log(`Relevant stars (from upload): ${relevantStars.length}`);
+          console.log(`Background stars (dimmed): ${otherStars.length}`);
+        } else {
+          // No upload: show all stars with normal brightness (demo mode)
+          relevantStars = starData;
+          otherStars = [];
+
+          console.log(`Demo mode: showing all ${starData.length} stars`);
+        }
+
+        // Create star field with highlighted relevant stars
+        const starField = createStarField(relevantStars, otherStars, scoresByTid);
+        scene.add(starField);
+        starFieldRef.current = starField;
+
+        // Store star data globally for click handling
+        window.currentStarData = relevantStars;
+        window.allStarData = starData; // Store complete star data for coordinate lookup
+
+        console.log('Star field created with uploaded data highlighted');
+      })
+      .catch(err => {
+        console.error('Failed to load stars.json:', err);
+      });
 
     // Mouse click handler
     const handleClick = (event) => {
@@ -103,22 +134,29 @@ const ThreeScene = () => {
 
       if (intersects.length > 0) {
         const index = intersects[0].index;
-        const starData = parsedData[index];
+        const currentStars = window.currentStarData || [];
+        const starData = currentStars[index];
+
         if (starData && starData.tid) {
           setSelectedTid(starData.tid);
+          console.log('Star clicked:', starData);
 
-          // Animate camera to star
+          // Animate camera to star - very close
           const starPosition = new THREE.Vector3(
             intersects[0].point.x,
             intersects[0].point.y,
             intersects[0].point.z
           );
 
+          // Move camera to better view the selected star
+          const direction = starPosition.clone().normalize();
+          const cameraPosition = direction.multiplyScalar(250); // Position camera outside sphere
+
           smoothCameraTransition(
             camera,
             controls,
-            starPosition.clone().add(new THREE.Vector3(0, 10, 20)),
-            starPosition,
+            cameraPosition,
+            starPosition, // Look at the star
             3000
           );
         }
@@ -126,6 +164,39 @@ const ThreeScene = () => {
     };
 
     renderer.domElement.addEventListener('click', handleClick);
+
+    // Listen for flyToStar events from CandidatesList
+    const handleFlyToStar = (event) => {
+      const { tid } = event.detail;
+      const allStars = window.allStarData || [];
+
+      // Find star in complete star data by TID
+      const starData = allStars.find(s => s.tid === tid);
+
+      if (starData && starData.ra !== undefined && starData.dec !== undefined) {
+        // Import raDec2Cartesian to convert RA/DEC to 3D coordinates
+        import('../../three/starRenderer').then(({ raDec2Cartesian }) => {
+          const { x, y, z } = raDec2Cartesian(starData.ra, starData.dec);
+          const starPosition = new THREE.Vector3(x, y, z);
+          const direction = starPosition.clone().normalize();
+          const cameraPosition = direction.multiplyScalar(250);
+
+          console.log(`Flying to star TID ${tid} at position:`, starPosition, `(RA: ${starData.ra}, DEC: ${starData.dec})`);
+
+          smoothCameraTransition(
+            camera,
+            controls,
+            cameraPosition,
+            starPosition,
+            3000
+          );
+        });
+      } else {
+        console.warn(`Star TID ${tid} not found in stars.json or missing RA/DEC coordinates`);
+      }
+    };
+
+    window.addEventListener('flyToStar', handleFlyToStar);
 
     // Window resize handler
     const handleResize = () => {
@@ -143,11 +214,6 @@ const ThreeScene = () => {
     const animate = () => {
       animationId = requestAnimationFrame(animate);
       controls.update();
-
-      if (starFieldRef.current) {
-        starFieldRef.current.rotation.y += 0.0001;
-      }
-
       renderer.render(scene, camera);
     };
     animate();
@@ -156,11 +222,14 @@ const ThreeScene = () => {
     return () => {
       cancelAnimationFrame(animationId);
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('flyToStar', handleFlyToStar);
       renderer.domElement.removeEventListener('click', handleClick);
-      mountRef.current?.removeChild(renderer.domElement);
+      if (mountRef.current && renderer.domElement.parentNode === mountRef.current) {
+        mountRef.current.removeChild(renderer.domElement);
+      }
       renderer.dispose();
     };
-  }, [parsedData, scoresByTid]);
+  }, [parsedData, scoresByTid, setSelectedTid]);
 
   return (
     <div

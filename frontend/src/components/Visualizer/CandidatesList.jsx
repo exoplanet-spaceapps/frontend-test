@@ -16,13 +16,16 @@ const CandidatesList = () => {
   const overThresholdTids = getOverThresholdTids();
 
   const handleCandidateClick = (tid) => {
-    setSelectedTid(tid);
+    // Only trigger camera fly animation, don't open panel
+    // Panel will open when user clicks the star in 3D view
+    const event = new CustomEvent('flyToStar', { detail: { tid } });
+    window.dispatchEvent(event);
   };
 
   return (
     <div className="bg-white/5 border border-white/10 rounded-lg p-4">
       <h3 className="text-lg font-semibold mb-3 text-blue-400">
-        🌟 Exoplanet Candidates
+        Exoplanet Candidates
       </h3>
 
       {/* Hardcoded Candidates Section */}

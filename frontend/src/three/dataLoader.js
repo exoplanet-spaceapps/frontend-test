@@ -57,7 +57,7 @@ export async function loadStarData(url) {
         }
 
         const rawData = await response.json();
-        console.log(`✅ Loaded ${rawData.length} raw records`);
+        console.log(`Loaded ${rawData.length} raw records`);
 
         const validStars = [];
         const invalidStars = [];
@@ -76,9 +76,9 @@ export async function loadStarData(url) {
             }
         });
 
-        console.log(`✅ Valid stars: ${validStars.length}`);
+        console.log(`Valid stars: ${validStars.length}`);
         if (invalidStars.length > 0) {
-            console.warn(`⚠️  Invalid stars filtered: ${invalidStars.length}`);
+            console.warn(`Invalid stars filtered: ${invalidStars.length}`);
         }
 
         logDataStatistics(validStars);
@@ -86,7 +86,7 @@ export async function loadStarData(url) {
         return validStars;
 
     } catch (error) {
-        console.error('❌ Error loading star data:', error);
+        console.error('Error loading star data:', error);
         throw new Error(`Failed to load star data: ${error.message}`);
     }
 }
@@ -135,7 +135,7 @@ function logDataStatistics(stars) {
         stats.decRange.max = Math.max(stats.decRange.max, star.dec);
     });
 
-    console.log('📊 Data Statistics:');
+    console.log('Data Statistics:');
     console.log(`   Total stars: ${stats.total}`);
     console.log(`   Catalogs:`, stats.catalogs);
     console.log(`   RA range: ${stats.raRange.min.toFixed(2)}° to ${stats.raRange.max.toFixed(2)}°`);

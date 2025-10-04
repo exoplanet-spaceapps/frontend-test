@@ -4,38 +4,38 @@
  */
 
 import * as THREE from 'three';
+import { estimateSpectralClass, getSpectralType, getSpectralColor } from '../utils/spectralClass';
 
 /**
  * Convert RA/DEC coordinates to 3D Cartesian coordinates
  * @param {number} ra - Right Ascension in degrees (0-360)
  * @param {number} dec - Declination in degrees (-90 to 90)
- * @param {number} radius - Distance from origin (default: 100)
+ * @param {number} radius - Distance from origin (default: 150 for celestial sphere)
  * @returns {Object} {x, y, z} Cartesian coordinates
  */
-export function raDec2Cartesian(ra, dec, radius = 100) {
+export function raDec2Cartesian(ra, dec, radius = 150) {
     const raRad = (ra * Math.PI) / 180;
     const decRad = (dec * Math.PI) / 180;
 
     const x = radius * Math.cos(decRad) * Math.cos(raRad);
     const y = radius * Math.sin(decRad);
-    const z = radius * Math.cos(decRad) * Math.sin(raRad);
+    const z = -radius * Math.cos(decRad) * Math.sin(raRad); // Negative z for correct orientation
 
     return { x, y, z };
 }
 
 /**
- * Determine star color based on exoplanet label
- * @param {number} label - Exoplanet candidate label (1 = confirmed, 0 = false positive)
- * @returns {THREE.Color} Three.js color object
+ * Determine star color based on spectral classification (OBAFGKM)
+ * @param {Object} star - Star data object with magnitude
+ * @returns {THREE.Color} Three.js color object based on stellar temperature
  */
-export function getStarColor(label) {
-    if (label === 1) {
-        return new THREE.Color(0x00b4ff); // Bright blue for confirmed exoplanet candidates
-    } else if (label === 0) {
-        return new THREE.Color(0xff8800); // Dark orange for false positives
-    } else {
-        return new THREE.Color(0x8888ff); // Default purple for unknown
-    }
+export function getStarColor(star) {
+    // Estimate spectral class from magnitude if not provided
+    const spectralClass = star.spectralClass || estimateSpectralClass(star.magnitude || 10);
+    const spectralType = getSpectralType(spectralClass);
+
+    // Get color based on OBAFGKM classification
+    return getSpectralColor(spectralType);
 }
 
 /**
@@ -44,51 +44,79 @@ export function getStarColor(label) {
  * @returns {number} Star size
  */
 export function calculateStarSize(star) {
-    let size = 1.0;
+    // Base size increased for better visibility
+    let size = 4.0;
+
+    if (star.magnitude && !isNaN(star.magnitude)) {
+        // Brighter stars (lower magnitude) = larger size
+        const magFactor = (15 - Math.min(star.magnitude, 15)) / 10;
+        size += magFactor * 2.0;
+    }
 
     if (star.depth && !isNaN(star.depth)) {
         const depthFactor = Math.log10(Math.abs(star.depth) + 1);
-        size += depthFactor * 0.5;
-    }
-
-    if (star.magnitude && !isNaN(star.magnitude)) {
-        const magFactor = (15 - Math.min(star.magnitude, 15)) / 10;
-        size += magFactor;
+        size += depthFactor * 1.0;
     }
 
     if (star.period && !isNaN(star.period)) {
         const periodFactor = Math.log10(star.period + 1) / 5;
-        size += periodFactor * 0.3;
+        size += periodFactor * 0.8;
     }
 
-    return Math.max(0.5, Math.min(size, 4.0));
+    // Size range increased for better visibility
+    return Math.max(3.0, Math.min(size, 10.0));
 }
 
 /**
- * Create particle system for star field
- * @param {Array} starData - Array of star objects with ra, dec, catalog properties
+ * Create particle system for star field with highlight/dim support
+ * @param {Array} relevantStars - Stars from uploaded data (highlighted with OBAFGKM colors)
+ * @param {Array} otherStars - Background stars (dimmed, low opacity)
+ * @param {Object} scoresByTid - Score map for identifying candidates
  * @returns {THREE.Points} Three.js Points object representing the star field
  */
-export function createStarField(starData) {
+export function createStarField(relevantStars, otherStars = [], scoresByTid = {}) {
     const positions = [];
     const colors = [];
     const sizes = [];
+    const alphas = [];
 
-    starData.forEach(star => {
+    // Add relevant stars (from uploaded data) - full brightness with OBAFGKM colors
+    relevantStars.forEach(star => {
         const { x, y, z } = raDec2Cartesian(star.ra, star.dec);
         positions.push(x, y, z);
 
-        const color = getStarColor(star.label);
+        // Use OBAFGKM spectral colors
+        const color = getStarColor(star);
         colors.push(color.r, color.g, color.b);
 
+        // Larger size for candidates
         const size = calculateStarSize(star);
         sizes.push(size);
+
+        // Full opacity for relevant stars
+        alphas.push(1.0);
+    });
+
+    // Add background stars - dimmed but visible (to show sphere shape)
+    otherStars.forEach(star => {
+        const { x, y, z } = raDec2Cartesian(star.ra, star.dec);
+        positions.push(x, y, z);
+
+        // Subtle gray/blue color for background stars (to show sphere shape)
+        colors.push(0.4, 0.4, 0.5); // Subtle blue-gray
+
+        // Small but visible size
+        sizes.push(1.5);
+
+        // Medium-low opacity for background (visible but not distracting)
+        alphas.push(0.35);
     });
 
     const geometry = new THREE.BufferGeometry();
     geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
     geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
     geometry.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1));
+    geometry.setAttribute('alpha', new THREE.Float32BufferAttribute(alphas, 1));
 
     const material = new THREE.ShaderMaterial({
         uniforms: {
@@ -97,26 +125,38 @@ export function createStarField(starData) {
         vertexShader: `
             attribute float size;
             attribute vec3 color;
+            attribute float alpha;
             varying vec3 vColor;
+            varying float vAlpha;
 
             void main() {
                 vColor = color;
+                vAlpha = alpha;
                 vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-                gl_PointSize = size * (300.0 / -mvPosition.z);
+                // Size multiplier increased for better visibility
+                gl_PointSize = size * (800.0 / length(mvPosition.xyz));
                 gl_Position = projectionMatrix * mvPosition;
             }
         `,
         fragmentShader: `
             uniform sampler2D pointTexture;
             varying vec3 vColor;
+            varying float vAlpha;
 
             void main() {
                 vec4 texColor = texture2D(pointTexture, gl_PointCoord);
                 float dist = distance(gl_PointCoord, vec2(0.5));
-                float coreBrightness = 1.0 - smoothstep(0.0, 0.3, dist);
-                float outerGlow = 1.0 - smoothstep(0.2, 0.5, dist);
-                vec3 finalColor = vColor * (coreBrightness * 1.5 + outerGlow * 0.8);
-                float alpha = texColor.a * outerGlow;
+
+                // Enhanced brightness and glow - increased for better visibility
+                float coreBrightness = 1.0 - smoothstep(0.0, 0.2, dist);
+                float outerGlow = 1.0 - smoothstep(0.1, 0.5, dist);
+
+                // Much brighter colors - increased multipliers
+                vec3 finalColor = vColor * (coreBrightness * 5.0 + outerGlow * 3.0);
+
+                // Use vAlpha to control overall opacity (for dimming background stars)
+                float alpha = texColor.a * outerGlow * vAlpha;
+
                 gl_FragColor = vec4(finalColor, alpha);
             }
         `,
@@ -126,7 +166,8 @@ export function createStarField(starData) {
     });
 
     const starField = new THREE.Points(geometry, material);
-    console.log(`✅ Created star field with ${starData.length} stars`);
+    const totalStars = relevantStars.length + otherStars.length;
+    console.log(`Created star field: ${relevantStars.length} highlighted + ${otherStars.length} dimmed = ${totalStars} total`);
     return starField;
 }
 

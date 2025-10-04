@@ -122,6 +122,53 @@
             color: #4488ff;
         }
 
+        /* Legend panel */
+        #legend-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 50, 0.8);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 12px;
+            border: 1px solid #4488ff;
+            font-size: 13px;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+        }
+
+        #legend-panel h3 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            font-weight: 400;
+            color: #4488ff;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            color: #88aaff;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 10px;
+            box-shadow: 0 0 10px currentColor;
+        }
+
+        .legend-color.confirmed {
+            background: #00b4ff;
+            color: #00b4ff;
+        }
+
+        .legend-color.false-positive {
+            background: #ff8800;
+            color: #ff8800;
+        }
+
         /* Responsive design */
         @media (max-width: 768px) {
             #title-overlay h1 {
@@ -139,6 +186,22 @@
 
             #stats-panel span {
                 margin: 0 8px;
+            }
+
+            #legend-panel {
+                bottom: 10px;
+                right: 10px;
+                padding: 10px 15px;
+                font-size: 11px;
+            }
+
+            #legend-panel h3 {
+                font-size: 12px;
+            }
+
+            .legend-color {
+                width: 16px;
+                height: 16px;
             }
         }
     </style>
@@ -164,6 +227,19 @@
         <span>🔵 <strong id="tic-count">0</strong> TESS</span>
         <span>🟡 <strong id="kic-count">0</strong> Kepler</span>
         <span>⭐ <strong id="total-count">0</strong> Total</span>
+    </div>
+
+    <!-- Legend Panel -->
+    <div id="legend-panel">
+        <h3>Star Classification</h3>
+        <div class="legend-item">
+            <div class="legend-color confirmed"></div>
+            <span>Confirmed Exoplanet Candidates</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color false-positive"></div>
+            <span>False Positives</span>
+        </div>
     </div>
 
     <!-- Three.js Import Map -->
