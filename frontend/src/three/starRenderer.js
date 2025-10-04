@@ -10,15 +10,16 @@ import { estimateSpectralClass, getSpectralType, getSpectralColor } from '../uti
  * Convert RA/DEC coordinates to 3D Cartesian coordinates
  * @param {number} ra - Right Ascension in degrees (0-360)
  * @param {number} dec - Declination in degrees (-90 to 90)
- * @param {number} radius - Distance from origin (default: 150 for celestial sphere)
- * @returns {Object} {x, y, z} Cartesian coordinates
+ * @param {number} radius - Distance from origin (default: 70 for celestial sphere)
+ * @param {number} customDepthFactor - Optional custom depth factor (0-1), if not provided generates random
+ * @returns {Object} {x, y, z, depthFactor} Cartesian coordinates
  */
-export function raDec2Cartesian(ra, dec, radius = 70) {
+export function raDec2Cartesian(ra, dec, radius = 70, customDepthFactor = null) {
     const raRad = (ra * Math.PI) / 180;
     const decRad = (dec * Math.PI) / 180;
 
-    // Add significant depth variation: stars distributed within sphere (not just surface)
-    const depthFactor = 0.5 + Math.random() * 0.5; // 50%-100% of radius for strong depth perception
+    // Use custom depth factor or generate random one for depth variation
+    const depthFactor = customDepthFactor !== null ? customDepthFactor : (0.5 + Math.random() * 0.5);
     const effectiveRadius = radius * depthFactor;
 
     const x = effectiveRadius * Math.cos(decRad) * Math.cos(raRad);
@@ -107,22 +108,36 @@ export function createStarField(relevantStars, otherStars = [], scoresByTid = {}
         depthFactors.push(depthFactor);
     });
 
-    // Add background stars - subtle backdrop to maintain sphere shape
-    otherStars.forEach(star => {
-        const { x, y, z, depthFactor } = raDec2Cartesian(star.ra, star.dec);
+    // Add background stars - stratified distribution for clear sphere shape
+    otherStars.forEach((star, index) => {
+        // Stratified distribution: 80% on sphere surface, 20% inside
+        const isSurfaceStar = (index / otherStars.length) < 0.8;
+
+        let depthFactor;
+        if (isSurfaceStar) {
+            // Surface layer: 90%-100% radius (tight shell for clear boundary)
+            depthFactor = 0.90 + Math.random() * 0.10;
+        } else {
+            // Interior layer: 50%-90% radius (depth perception)
+            depthFactor = 0.50 + Math.random() * 0.40;
+        }
+
+        const { x, y, z } = raDec2Cartesian(star.ra, star.dec, 70, depthFactor);
         positions.push(x, y, z);
 
-        // Use OBAFGKM colors for background stars too, but dimmed
+        // Use OBAFGKM colors for background stars
         const color = getStarColor(star);
         colors.push(color.r, color.g, color.b);
 
-        // Larger size for background stars to show sphere shape
+        // Size: surface stars larger to define boundary, interior stars smaller
         const baseSize = calculateStarSize(star);
-        const depthScaledSize = baseSize * 0.55 * (0.6 + depthFactor * 0.8); // 55% of normal size (increased from 40%)
+        const sizeMultiplier = isSurfaceStar ? 0.65 : 0.40; // Surface 65%, interior 40%
+        const depthScaledSize = baseSize * sizeMultiplier * (0.6 + depthFactor * 0.8);
         sizes.push(depthScaledSize);
 
-        // Higher opacity to show sphere shape very clearly
-        const depthAlpha = 0.60 + depthFactor * 0.30; // 0.60-0.90 alpha range (very visible)
+        // Opacity: surface stars brighter to define sphere, interior dimmer for depth
+        const baseAlpha = isSurfaceStar ? 0.75 : 0.45; // Surface 0.75-0.95, interior 0.45-0.65
+        const depthAlpha = baseAlpha + depthFactor * 0.20;
         alphas.push(depthAlpha);
 
         // Store depth factor
