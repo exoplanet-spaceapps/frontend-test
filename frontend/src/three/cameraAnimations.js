@@ -148,6 +148,52 @@ export function smoothCameraTransition(camera, controls, targetPosition, targetL
 }
 
 /**
+ * Intro animation: sphere starts close (large) and moves away to center
+ * @param {THREE.Camera} camera - Three.js camera
+ * @param {OrbitControls} controls - OrbitControls instance
+ * @param {THREE.Vector3} startPosition - Starting camera position (close to sphere)
+ * @param {THREE.Vector3} endPosition - Final camera position
+ * @param {number} duration - Animation duration in milliseconds
+ * @param {Function} onComplete - Callback when animation completes
+ * @returns {Object} Animation controller
+ */
+export function introAnimation(camera, controls, startPosition, endPosition, duration = 2500, onComplete = null) {
+    const startTime = performance.now();
+    const lookAtCenter = new THREE.Vector3(0, 0, 0);
+
+    let animationFrameId = null;
+
+    const animate = (currentTime) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easedProgress = easeInOutCubic(progress);
+
+        // Interpolate camera position from close to far
+        camera.position.lerpVectors(startPosition, endPosition, easedProgress);
+        camera.lookAt(lookAtCenter);
+
+        // Update controls
+        controls.update();
+
+        if (progress < 1) {
+            animationFrameId = requestAnimationFrame(animate);
+        } else if (onComplete) {
+            onComplete();
+        }
+    };
+
+    animationFrameId = requestAnimationFrame(animate);
+
+    return {
+        cancel: () => {
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+            }
+        }
+    };
+}
+
+/**
  * Preset camera positions for different views
  */
 export const CameraPresets = {

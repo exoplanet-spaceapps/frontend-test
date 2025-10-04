@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import useAppStore from '../../state/useAppStore';
 import { createStarField } from '../../three/starRenderer';
-import { smoothCameraTransition } from '../../three/cameraAnimations';
+import { smoothCameraTransition, introAnimation } from '../../three/cameraAnimations';
 import { estimateSpectralClass, getSpectralType } from '../../utils/spectralClass';
 
 /**
@@ -42,7 +42,8 @@ const ThreeScene = () => {
       0.1,
       1000
     );
-    camera.position.set(-10, 0, 50); // Camera offset left to show sphere on left side
+    // Start camera close to sphere (large view) for intro animation
+    camera.position.set(-5, 0, 20);
     camera.lookAt(0, 0, 0);
     cameraRef.current = camera;
 
@@ -71,8 +72,10 @@ const ThreeScene = () => {
     controls.maxDistance = 100; // Reasonable max distance
     controls.rotateSpeed = 0.5;
     controls.target.set(0, 0, 0); // Always rotate around center
-    controls.autoRotate = false; // No auto rotation
+    controls.autoRotate = false; // Will be enabled after intro animation
+    controls.autoRotateSpeed = 0.5; // Slow rotation speed
     controls.screenSpacePanning = false; // Ensure no screen space panning
+    controls.enabled = false; // Disable user interaction during intro animation
     controlsRef.current = controls;
 
     // Raycaster for star selection
@@ -118,6 +121,17 @@ const ThreeScene = () => {
         window.allStarData = starData; // Store complete star data for coordinate lookup
 
         console.log('Star field created with uploaded data highlighted');
+
+        // Trigger intro animation: sphere from close (large) to far (centered)
+        const startPos = new THREE.Vector3(-5, 0, 20); // Close position
+        const endPos = new THREE.Vector3(-10, 0, 50); // Final position
+
+        introAnimation(camera, controls, startPos, endPos, 2500, () => {
+          // Animation complete: enable user controls and auto-rotation
+          controls.enabled = true;
+          controls.autoRotate = true;
+          console.log('Intro animation complete - auto-rotation enabled');
+        });
       })
       .catch(err => {
         console.error('Failed to load stars.json:', err);
@@ -149,6 +163,9 @@ const ThreeScene = () => {
           } else {
             console.log('Non-candidate star clicked - camera animation only');
           }
+
+          // Stop auto-rotation when user clicks a star
+          controls.autoRotate = false;
 
           // Animate camera to star - very close (regardless of whether it's a candidate)
           const starPosition = new THREE.Vector3(
@@ -183,6 +200,9 @@ const ThreeScene = () => {
       const starData = allStars.find(s => s.tid === tid);
 
       if (starData && starData.ra !== undefined && starData.dec !== undefined) {
+        // Stop auto-rotation when flying to a star
+        controls.autoRotate = false;
+
         // Import raDec2Cartesian to convert RA/DEC to 3D coordinates
         import('../../three/starRenderer').then(({ raDec2Cartesian }) => {
           const { x, y, z } = raDec2Cartesian(starData.ra, starData.dec);
