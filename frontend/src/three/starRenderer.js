@@ -13,7 +13,7 @@ import { estimateSpectralClass, getSpectralType, getSpectralColor } from '../uti
  * @param {number} radius - Distance from origin (default: 150 for celestial sphere)
  * @returns {Object} {x, y, z} Cartesian coordinates
  */
-export function raDec2Cartesian(ra, dec, radius = 50) {
+export function raDec2Cartesian(ra, dec, radius = 70) {
     const raRad = (ra * Math.PI) / 180;
     const decRad = (dec * Math.PI) / 180;
 
@@ -153,7 +153,7 @@ export function createStarField(relevantStars, otherStars = [], scoresByTid = {}
 
                 // Ultra-concentrated core for maximum sharpness
                 float coreBrightness = 1.0 - smoothstep(0.0, 0.1, dist);
-                float outerGlow = 1.0 - smoothstep(0.08, 0.25, dist);
+                float outerGlow = 1.0 - smoothstep(0.08, 0.18, dist);
 
                 // Reduced brightness for softer, less flashy stars
                 vec3 finalColor = vColor * (coreBrightness * 12.0 + outerGlow * 2.5);

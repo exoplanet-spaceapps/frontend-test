@@ -42,8 +42,8 @@ const ThreeScene = () => {
       0.1,
       1000
     );
-    // Start camera WAY beyond top-left (off-screen) for dramatic entrance (adjusted for larger sphere)
-    camera.position.set(-200, 150, 80);
+    // Start camera from top-right (near user) off-screen for dramatic entrance
+    camera.position.set(200, 150, 150); // Right(+x), Top(+y), Near user(+z)
     camera.lookAt(0, 0, 0);
     cameraRef.current = camera;
 
@@ -68,8 +68,8 @@ const ThreeScene = () => {
     controls.dampingFactor = 0.05;
     controls.enableZoom = true;
     controls.enablePan = false; // Disable panning to keep sphere centered
-    controls.minDistance = 60; // Slightly larger than sphere radius (50)
-    controls.maxDistance = 300; // Wider range for better exploration
+    controls.minDistance = 80; // Slightly larger than sphere radius (70)
+    controls.maxDistance = 350; // Wider range for better exploration
     controls.rotateSpeed = 0.5;
     controls.target.set(0, 0, 0); // Always rotate around center
     controls.autoRotate = false; // Will be enabled after intro animation
@@ -122,9 +122,9 @@ const ThreeScene = () => {
 
         console.log('Star field created with uploaded data highlighted');
 
-        // Trigger intro animation: sphere from WAY beyond top-left to center (adjusted for larger sphere)
-        const startPos = new THREE.Vector3(-200, 150, 80); // Far top-left, beyond visible screen
-        const endPos = new THREE.Vector3(0, 0, 150); // Center of screen at proper viewing distance
+        // Trigger intro animation: sphere from top-right (near user) to center
+        const startPos = new THREE.Vector3(200, 150, 150); // Top-right, near user, off-screen
+        const endPos = new THREE.Vector3(0, 0, 180); // Center of screen at proper viewing distance
 
         introAnimation(camera, controls, startPos, endPos, 2500, () => {
           // Animation complete: pause for 3 seconds, then enable VERY slow auto-rotation
@@ -180,7 +180,7 @@ const ThreeScene = () => {
 
           // Move camera to better view the selected star
           const direction = starPosition.clone().normalize();
-          const cameraPosition = direction.multiplyScalar(50); // Position camera outside sphere
+          const cameraPosition = direction.multiplyScalar(70); // Position camera outside sphere
 
           smoothCameraTransition(
             camera,
@@ -212,7 +212,7 @@ const ThreeScene = () => {
           const { x, y, z } = raDec2Cartesian(starData.ra, starData.dec);
           const starPosition = new THREE.Vector3(x, y, z);
           const direction = starPosition.clone().normalize();
-          const cameraPosition = direction.multiplyScalar(50);
+          const cameraPosition = direction.multiplyScalar(70);
 
           console.log(`Flying to star TID ${tid} at position:`, starPosition, `(RA: ${starData.ra}, DEC: ${starData.dec})`);
 
