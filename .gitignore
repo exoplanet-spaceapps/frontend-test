@@ -146,7 +146,7 @@ CLAUDE.md
 
 # Dependencies
 node_modules/
-package-lock.json
+# package-lock.json - KEEP THIS for npm ci in CI/CD
 
 # Build output
 dist/
