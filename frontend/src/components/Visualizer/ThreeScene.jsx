@@ -37,12 +37,12 @@ const ThreeScene = () => {
 
     // Camera setup - positioned to view celestial sphere
     const camera = new THREE.PerspectiveCamera(
-      40,
+      50,
       mountRef.current.clientWidth / mountRef.current.clientHeight,
       0.1,
       1000
     );
-    camera.position.set(0, 5, 35); // Camera positioned to show full sphere on left side, slightly above
+    camera.position.set(-10, 0, 50); // Camera offset left to show sphere on left side
     camera.lookAt(0, 0, 0);
     cameraRef.current = camera;
 
@@ -67,8 +67,8 @@ const ThreeScene = () => {
     controls.dampingFactor = 0.05;
     controls.enableZoom = true;
     controls.enablePan = false; // Disable panning to keep sphere centered
-    controls.minDistance = 15; // Slightly larger than sphere radius (8)
-    controls.maxDistance = 70; // Reasonable max distance
+    controls.minDistance = 25; // Slightly larger than sphere radius (15)
+    controls.maxDistance = 100; // Reasonable max distance
     controls.rotateSpeed = 0.5;
     controls.target.set(0, 0, 0); // Always rotate around center
     controls.autoRotate = false; // No auto rotation
@@ -81,7 +81,8 @@ const ThreeScene = () => {
     raycasterRef.current = raycaster;
 
     // Load star data from stars.json
-    fetch('/frontend/data/stars.json')
+    const basePath = import.meta.env.BASE_URL;
+    fetch(`${basePath}data/stars.json`)
       .then(res => res.json())
       .then(starData => {
         console.log(`Loaded ${starData.length} stars from stars.json`);
@@ -158,7 +159,7 @@ const ThreeScene = () => {
 
           // Move camera to better view the selected star
           const direction = starPosition.clone().normalize();
-          const cameraPosition = direction.multiplyScalar(35); // Position camera outside sphere
+          const cameraPosition = direction.multiplyScalar(50); // Position camera outside sphere
 
           smoothCameraTransition(
             camera,
@@ -187,7 +188,7 @@ const ThreeScene = () => {
           const { x, y, z } = raDec2Cartesian(starData.ra, starData.dec);
           const starPosition = new THREE.Vector3(x, y, z);
           const direction = starPosition.clone().normalize();
-          const cameraPosition = direction.multiplyScalar(35);
+          const cameraPosition = direction.multiplyScalar(50);
 
           console.log(`Flying to star TID ${tid} at position:`, starPosition, `(RA: ${starData.ra}, DEC: ${starData.dec})`);
 
