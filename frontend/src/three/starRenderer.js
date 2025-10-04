@@ -17,15 +17,15 @@ export function raDec2Cartesian(ra, dec, radius = 70) {
     const raRad = (ra * Math.PI) / 180;
     const decRad = (dec * Math.PI) / 180;
 
-    // Add depth variation: stars distributed within sphere (not just surface)
-    const depthFactor = 0.7 + Math.random() * 0.3; // 70%-100% of radius for depth
+    // Add significant depth variation: stars distributed within sphere (not just surface)
+    const depthFactor = 0.5 + Math.random() * 0.5; // 50%-100% of radius for strong depth perception
     const effectiveRadius = radius * depthFactor;
 
     const x = effectiveRadius * Math.cos(decRad) * Math.cos(raRad);
     const y = effectiveRadius * Math.sin(decRad);
     const z = -effectiveRadius * Math.cos(decRad) * Math.sin(raRad);
 
-    return { x, y, z };
+    return { x, y, z, depthFactor }; // Return depth factor for size/brightness scaling
 }
 
 /**
@@ -83,27 +83,33 @@ export function createStarField(relevantStars, otherStars = [], scoresByTid = {}
     const colors = [];
     const sizes = [];
     const alphas = [];
+    const depthFactors = [];
 
     // Add relevant stars (from uploaded data) - full brightness with OBAFGKM colors
     relevantStars.forEach(star => {
-        const { x, y, z } = raDec2Cartesian(star.ra, star.dec);
+        const { x, y, z, depthFactor } = raDec2Cartesian(star.ra, star.dec);
         positions.push(x, y, z);
 
         // Use OBAFGKM spectral colors
         const color = getStarColor(star);
         colors.push(color.r, color.g, color.b);
 
-        // Larger size for candidates
-        const size = calculateStarSize(star);
-        sizes.push(size);
+        // Size affected by depth: closer stars (higher depthFactor) appear larger
+        const baseSize = calculateStarSize(star);
+        const depthScaledSize = baseSize * (0.6 + depthFactor * 0.8); // 0.6-1.4x size range
+        sizes.push(depthScaledSize);
 
-        // Full opacity for relevant stars
-        alphas.push(1.0);
+        // Opacity affected by depth: closer stars appear brighter
+        const depthAlpha = 0.7 + depthFactor * 0.3; // 0.7-1.0 alpha range
+        alphas.push(depthAlpha);
+
+        // Store depth factor for shader
+        depthFactors.push(depthFactor);
     });
 
     // Add background stars - subtle backdrop to maintain sphere shape
     otherStars.forEach(star => {
-        const { x, y, z } = raDec2Cartesian(star.ra, star.dec);
+        const { x, y, z, depthFactor } = raDec2Cartesian(star.ra, star.dec);
         positions.push(x, y, z);
 
         // Ultra-dim dark gray for minimal visibility
@@ -114,6 +120,9 @@ export function createStarField(relevantStars, otherStars = [], scoresByTid = {}
 
         // Extremely low opacity - barely perceptible backdrop
         alphas.push(0.08);
+
+        // Store depth factor
+        depthFactors.push(depthFactor);
     });
 
     const geometry = new THREE.BufferGeometry();
@@ -121,6 +130,7 @@ export function createStarField(relevantStars, otherStars = [], scoresByTid = {}
     geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
     geometry.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1));
     geometry.setAttribute('alpha', new THREE.Float32BufferAttribute(alphas, 1));
+    geometry.setAttribute('depthFactor', new THREE.Float32BufferAttribute(depthFactors, 1));
 
     const material = new THREE.ShaderMaterial({
         uniforms: {
@@ -130,15 +140,18 @@ export function createStarField(relevantStars, otherStars = [], scoresByTid = {}
             attribute float size;
             attribute vec3 color;
             attribute float alpha;
+            attribute float depthFactor;
             varying vec3 vColor;
             varying float vAlpha;
+            varying float vDepth;
 
             void main() {
                 vColor = color;
                 vAlpha = alpha;
+                vDepth = depthFactor; // Pass depth to fragment shader
                 vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-                // Size attenuation for depth perception (larger sphere needs different scaling)
-                gl_PointSize = size * (300.0 / length(mvPosition.xyz));
+                // Size attenuation for depth perception with depth-based scaling
+                gl_PointSize = size * (300.0 / length(mvPosition.xyz)) * (0.8 + depthFactor * 0.4);
                 gl_Position = projectionMatrix * mvPosition;
             }
         `,
@@ -146,6 +159,7 @@ export function createStarField(relevantStars, otherStars = [], scoresByTid = {}
             uniform sampler2D pointTexture;
             varying vec3 vColor;
             varying float vAlpha;
+            varying float vDepth;
 
             void main() {
                 vec4 texColor = texture2D(pointTexture, gl_PointCoord);
@@ -155,8 +169,9 @@ export function createStarField(relevantStars, otherStars = [], scoresByTid = {}
                 float coreBrightness = 1.0 - smoothstep(0.0, 0.1, dist);
                 float outerGlow = 1.0 - smoothstep(0.08, 0.18, dist);
 
-                // Reduced brightness for softer, less flashy stars
-                vec3 finalColor = vColor * (coreBrightness * 12.0 + outerGlow * 2.5);
+                // Brightness affected by depth: closer stars (higher vDepth) are brighter
+                float depthBrightness = 0.7 + vDepth * 0.6; // 0.7-1.3x brightness range
+                vec3 finalColor = vColor * (coreBrightness * 12.0 + outerGlow * 2.5) * depthBrightness;
 
                 // Use vAlpha to control overall opacity (for dimming background stars)
                 float alpha = texColor.a * outerGlow * vAlpha;
