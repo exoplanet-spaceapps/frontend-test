@@ -42,8 +42,8 @@ const ThreeScene = () => {
       0.1,
       1000
     );
-    // Start camera close to sphere (large view) for intro animation
-    camera.position.set(-5, 0, 20);
+    // Start camera at top-left corner, close to user (for intro animation)
+    camera.position.set(-25, 20, 15);
     camera.lookAt(0, 0, 0);
     cameraRef.current = camera;
 
@@ -73,7 +73,7 @@ const ThreeScene = () => {
     controls.rotateSpeed = 0.5;
     controls.target.set(0, 0, 0); // Always rotate around center
     controls.autoRotate = false; // Will be enabled after intro animation
-    controls.autoRotateSpeed = 0.5; // Slow rotation speed
+    controls.autoRotateSpeed = 0.3; // Very slow rotation speed
     controls.screenSpacePanning = false; // Ensure no screen space panning
     controls.enabled = false; // Disable user interaction during intro animation
     controlsRef.current = controls;
@@ -122,15 +122,19 @@ const ThreeScene = () => {
 
         console.log('Star field created with uploaded data highlighted');
 
-        // Trigger intro animation: sphere from close (large) to far (centered)
-        const startPos = new THREE.Vector3(-5, 0, 20); // Close position
-        const endPos = new THREE.Vector3(-10, 0, 50); // Final position
+        // Trigger intro animation: sphere from top-left (close) to center
+        const startPos = new THREE.Vector3(-25, 20, 15); // Top-left, close to user
+        const endPos = new THREE.Vector3(0, 0, 50); // Center of screen
 
         introAnimation(camera, controls, startPos, endPos, 2500, () => {
-          // Animation complete: enable user controls and auto-rotation
+          // Animation complete: pause for 2 seconds, then enable auto-rotation
           controls.enabled = true;
-          controls.autoRotate = true;
-          console.log('Intro animation complete - auto-rotation enabled');
+          console.log('Intro animation complete - pausing before rotation');
+
+          setTimeout(() => {
+            controls.autoRotate = true;
+            console.log('Auto-rotation enabled after pause');
+          }, 2000); // 2 second pause
         });
       })
       .catch(err => {
