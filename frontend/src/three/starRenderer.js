@@ -97,19 +97,19 @@ export function createStarField(relevantStars, otherStars = [], scoresByTid = {}
         alphas.push(1.0);
     });
 
-    // Add background stars - dimmed but visible (to show sphere shape)
+    // Add background stars - clear and visible to show sphere shape
     otherStars.forEach(star => {
         const { x, y, z } = raDec2Cartesian(star.ra, star.dec);
         positions.push(x, y, z);
 
-        // Very subtle gray color for background stars (to show sphere shape)
-        colors.push(0.3, 0.3, 0.35); // Very subtle gray
+        // Bright white/blue color for background stars
+        colors.push(0.8, 0.85, 1.0); // Bright bluish-white
 
-        // Small but visible size
-        sizes.push(1.2);
+        // Medium size for clear visibility
+        sizes.push(2.5);
 
-        // Low opacity for background (visible sphere shape but not distracting)
-        alphas.push(0.15);
+        // Higher opacity for clear star field
+        alphas.push(0.6);
     });
 
     const geometry = new THREE.BufferGeometry();
@@ -147,12 +147,12 @@ export function createStarField(relevantStars, otherStars = [], scoresByTid = {}
                 vec4 texColor = texture2D(pointTexture, gl_PointCoord);
                 float dist = distance(gl_PointCoord, vec2(0.5));
 
-                // Enhanced brightness and glow - increased for better visibility
-                float coreBrightness = 1.0 - smoothstep(0.0, 0.2, dist);
-                float outerGlow = 1.0 - smoothstep(0.1, 0.5, dist);
+                // Sharp star points with clear definition
+                float coreBrightness = 1.0 - smoothstep(0.0, 0.15, dist);
+                float outerGlow = 1.0 - smoothstep(0.05, 0.4, dist);
 
-                // Much brighter colors - increased multipliers
-                vec3 finalColor = vColor * (coreBrightness * 5.0 + outerGlow * 3.0);
+                // Bright, crisp colors for clear star visibility
+                vec3 finalColor = vColor * (coreBrightness * 6.0 + outerGlow * 2.5);
 
                 // Use vAlpha to control overall opacity (for dimming background stars)
                 float alpha = texColor.a * outerGlow * vAlpha;
