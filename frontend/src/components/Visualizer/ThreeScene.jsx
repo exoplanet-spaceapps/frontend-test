@@ -178,9 +178,9 @@ const ThreeScene = () => {
             intersects[0].point.z
           );
 
-          // Move camera to better view the selected star
+          // Move camera very close to the selected star
           const direction = starPosition.clone().normalize();
-          const cameraPosition = direction.multiplyScalar(70); // Position camera outside sphere
+          const cameraPosition = direction.multiplyScalar(82); // Very close: 82 (minimum is 80)
 
           smoothCameraTransition(
             camera,
@@ -207,12 +207,18 @@ const ThreeScene = () => {
         // Stop auto-rotation when flying to a star
         controls.autoRotate = false;
 
+        // Open info panel for the star
+        if (candidates.includes(tid)) {
+          setSelectedTid(tid);
+          console.log('Opening info panel for TID:', tid);
+        }
+
         // Import raDec2Cartesian to convert RA/DEC to 3D coordinates
         import('../../three/starRenderer').then(({ raDec2Cartesian }) => {
           const { x, y, z } = raDec2Cartesian(starData.ra, starData.dec);
           const starPosition = new THREE.Vector3(x, y, z);
           const direction = starPosition.clone().normalize();
-          const cameraPosition = direction.multiplyScalar(70);
+          const cameraPosition = direction.multiplyScalar(82); // Very close to star: 82 (minimum is 80)
 
           console.log(`Flying to star TID ${tid} at position:`, starPosition, `(RA: ${starData.ra}, DEC: ${starData.dec})`);
 
