@@ -133,8 +133,8 @@ export function createStarField(relevantStars, otherStars = [], scoresByTid = {}
                 vColor = color;
                 vAlpha = alpha;
                 vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-                // Maximum size multiplier for ultra-high resolution target stars
-                gl_PointSize = size * (800.0 / length(mvPosition.xyz));
+                // Increased size multiplier for more visible target stars
+                gl_PointSize = size * (1000.0 / length(mvPosition.xyz));
                 gl_Position = projectionMatrix * mvPosition;
             }
         `,
@@ -151,8 +151,8 @@ export function createStarField(relevantStars, otherStars = [], scoresByTid = {}
                 float coreBrightness = 1.0 - smoothstep(0.0, 0.1, dist);
                 float outerGlow = 1.0 - smoothstep(0.08, 0.25, dist);
 
-                // Maximum brightness for crystal-clear target stars
-                vec3 finalColor = vColor * (coreBrightness * 20.0 + outerGlow * 4.0);
+                // Reduced brightness for softer, less flashy stars
+                vec3 finalColor = vColor * (coreBrightness * 12.0 + outerGlow * 2.5);
 
                 // Use vAlpha to control overall opacity (for dimming background stars)
                 float alpha = texColor.a * outerGlow * vAlpha;

@@ -73,7 +73,7 @@ const ThreeScene = () => {
     controls.rotateSpeed = 0.5;
     controls.target.set(0, 0, 0); // Always rotate around center
     controls.autoRotate = false; // Will be enabled after intro animation
-    controls.autoRotateSpeed = 0.3; // Very slow rotation speed
+    controls.autoRotateSpeed = 0.15; // Ultra-slow rotation speed
     controls.screenSpacePanning = false; // Ensure no screen space panning
     controls.enabled = false; // Disable user interaction during intro animation
     controlsRef.current = controls;
@@ -127,14 +127,14 @@ const ThreeScene = () => {
         const endPos = new THREE.Vector3(0, 0, 50); // Center of screen
 
         introAnimation(camera, controls, startPos, endPos, 2500, () => {
-          // Animation complete: pause for 2 seconds, then enable auto-rotation
+          // Animation complete: pause for 3 seconds, then enable VERY slow auto-rotation
           controls.enabled = true;
           console.log('Intro animation complete - pausing before rotation');
 
           setTimeout(() => {
             controls.autoRotate = true;
             console.log('Auto-rotation enabled after pause');
-          }, 2000); // 2 second pause
+          }, 3000); // 3 second pause for clear stop
         });
       })
       .catch(err => {
