@@ -6,7 +6,7 @@ import { getSpectralDescription, getTemperatureRange } from '../../utils/spectra
 const TABS = [
   {
     id: 'transit',
-    label: '🔭 Transit & Orbital',
+    label: 'Transit & Orbital',
     fields: [
       { key: 'period', label: 'Orbital Period [days]', precision: 4, fromFeatures: 1 },
       { key: 'depth', label: 'Transit Depth', precision: 6, fromFeatures: 2 },
@@ -15,7 +15,7 @@ const TABS = [
   },
   {
     id: 'stellar',
-    label: '⭐ Stellar Properties',
+    label: 'Stellar Properties',
     fields: [
       { key: 'spectralClass', label: 'Spectral Class', isSpectral: true },
       { key: 'magnitude', label: 'Magnitude', precision: 3, fromFeatures: 3 },
@@ -25,7 +25,7 @@ const TABS = [
   },
   {
     id: 'catalog',
-    label: '📊 Catalog & Detection',
+    label: 'Catalog & Detection',
     fields: [
       { key: 'catalog', label: 'Catalog' },
       { key: 'source', label: 'Source' },
