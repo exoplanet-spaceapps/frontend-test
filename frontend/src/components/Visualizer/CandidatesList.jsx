@@ -31,43 +31,49 @@ const CandidatesList = () => {
       {/* Hardcoded Candidates Section */}
       <div className="mb-4 pb-4 border-b border-white/10">
         <p className="text-sm text-white/60 mb-2">Known Candidates</p>
+        <div className="mb-3 flex items-center gap-2 text-[0.7rem] text-white/50">
+          <span className="relative flex h-2.5 w-2.5">
+            <span className="absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75 animate-ping" />
+            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-blue-300" />
+          </span>
+          <span className="text-white/70">Click a candidate to fly to its star</span>
+        </div>
         <div className="space-y-2">
           {candidates.map(tid => (
-            <div
+            <button
+              type="button"
               key={tid}
               onClick={() => handleCandidateClick(tid)}
               className={`
-                p-2 rounded-md cursor-pointer transition
+                w-full rounded-lg border px-3 py-3 text-left transition
                 ${selectedTid === tid
-                  ? 'bg-blue-500/30 border border-blue-400'
-                  : 'bg-white/5 hover:bg-white/10 border border-transparent'
+                  ? 'border-blue-400 bg-blue-500/30 shadow-[0_8px_25px_rgba(59,130,246,0.25)]'
+                  : 'border-transparent bg-white/5 hover:border-blue-400/60 hover:bg-blue-500/20'
                 }
               `}
             >
-              <div className="flex justify-between items-center">
-                <span className="font-mono text-sm">TID {tid}</span>
-                <span className={`
-                  text-xs px-2 py-1 rounded
-                  ${scoresByTid[tid] >= threshold
-                    ? 'bg-green-500/20 text-green-400'
-                    : 'bg-orange-500/20 text-orange-400'
-                  }
-                `}>
-                  {scoresByTid[tid]?.toFixed(1) || 'N/A'}
+              <div className="flex items-start gap-3">
+                <span className="relative flex h-2.5 w-2.5 flex-shrink-0">
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75 animate-ping" />
+                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-blue-200" />
                 </span>
+                <div className="flex-1">
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-sm text-white/90">TID {tid}</span>
+                  </div>
+                  <p className="mt-1 text-[0.68rem] text-white/55">Tap to jump the camera to this planet's star.</p>
+                </div>
               </div>
-            </div>
+            </button>
           ))}
         </div>
       </div>
 
       {/* Detected Candidates Section */}
       <div>
-        <p className="text-sm text-white/60 mb-2">
-          Detected Above Threshold ({overThresholdTids.length})
-        </p>
+
         {overThresholdTids.length === 0 ? (
-          <p className="text-xs text-white/40">No candidates above threshold</p>
+          <p className="text-xs text-white/40"></p>
         ) : (
           <div className="max-h-48 overflow-y-auto space-y-2">
             {overThresholdTids.slice(0, 10).map(tid => (
