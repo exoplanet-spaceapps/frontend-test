@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import useAppStore from '../../state/useAppStore';
 import ThreeScene from '../../components/Visualizer/ThreeScene';
 import SummaryCard from '../../components/Visualizer/SummaryCard';
-import ThresholdControl from '../../components/Visualizer/ThresholdControl';
 import CandidatesList from '../../components/Visualizer/CandidatesList';
 import StarInfoPanel from '../../components/Visualizer/StarInfoPanel';
 
@@ -149,7 +148,6 @@ const Visualizer = () => {
           <div className="p-6 space-y-6">
             <h2 className="text-2xl font-bold">Control Panel</h2>
             <SummaryCard />
-            <ThresholdControl />
             <CandidatesList />
           </div>
         </div>
@@ -167,7 +165,6 @@ const Visualizer = () => {
         <div className="flex-1 bg-black/50 backdrop-blur-md p-4 space-y-4 overflow-y-auto">
           <h2 className="text-xl font-bold">Control Panel</h2>
           <SummaryCard />
-          <ThresholdControl />
           <CandidatesList />
         </div>
       </div>
