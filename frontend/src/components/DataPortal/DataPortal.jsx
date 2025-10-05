@@ -4,6 +4,78 @@ import useAppStore from "../../state/useAppStore";
 import { parseFile } from "../../utils/parseFile";
 import { scoreForTarget } from "../../utils/probability";
 
+const SAMPLE_FILE_NAME = "sample-data.csv";
+const SAMPLE_ROW_COUNT = 11979;
+
+const SAMPLE_ANCHOR_ENTRIES = [
+  { tid: 88863718, period: "1.9316462", depth: "1286", magnitude: "9.42344", snr: "47.20" },
+  { tid: 65212867, period: "6.9989206", depth: "2840", magnitude: "8.87759", snr: "52.10" },
+  { tid: 107782586, period: "1.9600277", depth: "1707.6273", magnitude: "8.43310", snr: "44.85" },
+  { tid: 231663901, period: "1.4303699", depth: "18960.7123", magnitude: "12.40690", snr: "38.62" },
+  { tid: 114018671, period: "2.4704981", depth: "250", magnitude: "8.23880", snr: "29.40" },
+  { tid: 341420329, period: "5.2341008", depth: "20796.9416", magnitude: "10.63480", snr: "58.47" },
+];
+
+const buildSampleDataset = () => {
+  const parsedData = SAMPLE_ANCHOR_ENTRIES.map(entry => ({
+    tid: entry.tid,
+    features: [
+      String(entry.tid),
+      entry.period,
+      entry.depth,
+      entry.magnitude,
+      entry.snr,
+    ],
+  }));
+
+  const fillerCount = Math.max(SAMPLE_ROW_COUNT - parsedData.length, 0);
+
+  // Generate synthetic filler rows so the demo mirrors a full 11,979-row upload
+  for (let i = 0; i < fillerCount; i += 1) {
+    const base = SAMPLE_ANCHOR_ENTRIES[i % SAMPLE_ANCHOR_ENTRIES.length];
+    const period = (parseFloat(base.period) + (i % 47) * 0.0137).toFixed(5);
+    const depth = (parseFloat(base.depth) * (1 + (i % 23) * 0.0005)).toFixed(4);
+    const magnitude = (parseFloat(base.magnitude) + (i % 29) * 0.002).toFixed(3);
+    const snr = (parseFloat(base.snr) + (i % 31) * 0.15).toFixed(2);
+
+    parsedData.push({
+      tid: null,
+      features: [
+        `SIM-${String(i + 1).padStart(5, "0")}`,
+        period,
+        depth,
+        magnitude,
+        snr,
+      ],
+    });
+  }
+
+  const scores = {};
+  parsedData.forEach(item => {
+    if (item.tid) {
+      scores[item.tid] = scoreForTarget(item.features);
+    }
+  });
+
+  const preview = parsedData
+    .slice(0, 5)
+    .map(d => `TID: ${d.tid || 'N/A'}, Features: ${d.features.slice(0, 3).join(', ')}...`)
+    .join('\n');
+
+  const file = {
+    name: SAMPLE_FILE_NAME,
+    size: SAMPLE_ROW_COUNT * 64,
+    type: "text/csv",
+  };
+
+  return {
+    file,
+    parsedData,
+    scores,
+    preview,
+  };
+};
+
 const DataPortal = () => {
   const navigate = useNavigate();
   const processFile = useAppStore(state => state.processFile);
@@ -113,6 +185,36 @@ const DataPortal = () => {
     reader.readAsText(file);
   };
 
+  const handleSampleData = () => {
+    const dataset = buildSampleDataset();
+
+    setUploadState({
+      status: "reading",
+      fileType: "csv",
+      fileName: dataset.file.name,
+    });
+
+    setTimeout(() => {
+      setUploadState({
+        status: "uploading",
+        fileType: "csv",
+        fileName: dataset.file.name,
+      });
+
+      setTimeout(() => {
+        setUploadState({
+          status: "success",
+          fileType: "csv",
+          fileName: dataset.file.name,
+          rowCount: dataset.parsedData.length,
+          preview: dataset.preview,
+        });
+
+        processFile(dataset.file, dataset.parsedData, dataset.scores);
+      }, 350);
+    }, 250);
+  };
+
   return (
     <section className="h-[700px] flex items-center justify-center px-6 py-24 text-white relative">
       <input
@@ -148,22 +250,22 @@ const DataPortal = () => {
         </p>
         <div className="grid gap-4 sm:grid-cols-2" data-aos="fade-up" data-aos-delay="200">
           <button
-            onClick={() => handleUploadClick(csvInputRef)}
+            onClick={handleSampleData}
             className="bg-blue-400 text-white hover:bg-blue-500 px-4 py-3 rounded-lg font-semibold transition"
+          >
+            Try Sample Data
+          </button>
+          <button
+            onClick={() => handleUploadClick(csvInputRef)}
+            className="bg-white/10 text-white/80 hover:bg-white/20 hover:text-white px-4 py-3 rounded-lg font-semibold border border-white/20 transition"
           >
             Upload CSV
           </button>
           <button
             onClick={() => handleUploadClick(datInputRef)}
-            className="bg-indigo-400 text-white hover:bg-indigo-500 px-4 py-3 rounded-lg font-semibold transition"
+            className="bg-white/10 text-white/80 hover:bg-white/20 hover:text-white px-4 py-3 rounded-lg font-semibold border border-white/20 transition"
           >
             Upload .dat
-          </button>
-          <button
-            disabled
-            className="bg-white/10 text-white/80 px-4 py-3 rounded-lg font-semibold border border-white/20 cursor-not-allowed"
-          >
-            Try Sample Data (Coming Soon)
           </button>
         </div>
         {uploadState.status === "reading" && (
