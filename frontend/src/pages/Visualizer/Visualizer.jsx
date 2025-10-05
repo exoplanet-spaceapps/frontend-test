@@ -4,6 +4,7 @@ import ThreeScene from '../../components/Visualizer/ThreeScene';
 import SummaryCard from '../../components/Visualizer/SummaryCard';
 import CandidatesList from '../../components/Visualizer/CandidatesList';
 import StarInfoPanel from '../../components/Visualizer/StarInfoPanel';
+import Navbar from '../../components/Navbar/Navbar';
 
 const Visualizer = () => {
   const phase = useAppStore(state => state.phase);
@@ -71,107 +72,113 @@ const Visualizer = () => {
   // Enhanced analyzing state UI
   if (phase === 'analyzing') {
     return (
-      <div data-visualizer className="fixed inset-0 bg-black text-white flex items-center justify-center px-6">
-        <div className="max-w-2xl w-full">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <div className="animate-spin rounded-full h-20 w-20 border-t-2 border-b-2 border-blue-500 mx-auto mb-6"></div>
-            <h1 className="text-3xl font-bold mb-3">AI Analysis in Progress</h1>
-            <p className="text-white/70 text-lg">Processing {uploadedFile?.name}</p>
-          </div>
-
-          {/* Progress Bar */}
-          <div className="mb-6">
-            <div className="flex justify-between text-sm mb-2">
-              <span className="text-white/80">{analysisStep}</span>
-              <span className="text-blue-400 font-mono">{progress}%</span>
+      <>
+        <Navbar />
+        <div data-visualizer className="fixed inset-0 bg-black text-white flex items-center justify-center px-6 pt-24">
+          <div className="max-w-2xl w-full">
+            {/* Header */}
+            <div className="text-center mb-8">
+              <div className="animate-spin rounded-full h-20 w-20 border-t-2 border-b-2 border-blue-500 mx-auto mb-6"></div>
+              <h1 className="text-3xl font-bold mb-3">AI Analysis in Progress</h1>
+              <p className="text-white/70 text-lg">Processing {uploadedFile?.name}</p>
             </div>
-            <div className="w-full bg-white/10 rounded-full h-3 overflow-hidden">
-              <div
-                className="bg-gradient-to-r from-blue-500 to-purple-500 h-full transition-all duration-500 ease-out"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-          </div>
 
-          {/* Statistics Panel */}
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-lg p-6 space-y-4">
-            <h3 className="text-lg font-semibold mb-4">Analysis Parameters</h3>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-black/30 rounded-lg p-4">
-                <div className="text-white/60 text-sm mb-1">Total Targets</div>
-                <div className="text-2xl font-bold text-blue-400">{parsedData.length || 0}</div>
+            {/* Progress Bar */}
+            <div className="mb-6">
+              <div className="flex justify-between text-sm mb-2">
+                <span className="text-white/80">{analysisStep}</span>
+                <span className="text-blue-400 font-mono">{progress}%</span>
               </div>
-
-              <div className="bg-black/30 rounded-lg p-4">
-                <div className="text-white/60 text-sm mb-1">Threshold</div>
-                <div className="text-2xl font-bold text-purple-400">{threshold}%</div>
+              <div className="w-full bg-white/10 rounded-full h-3 overflow-hidden">
+                <div
+                  className="bg-gradient-to-r from-blue-500 to-purple-500 h-full transition-all duration-500 ease-out"
+                  style={{ width: `${progress}%` }}
+                />
               </div>
             </div>
 
-            {progress >= 85 && (
-              <div className="bg-black/30 rounded-lg p-4 animate-pulse">
-                <div className="text-white/60 text-sm mb-1">Candidates Found</div>
-                <div className="text-3xl font-bold text-green-400">{getOverThresholdCount()}</div>
-              </div>
-            )}
-          </div>
+            {/* Statistics Panel */}
+            <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-lg p-6 space-y-4">
+              <h3 className="text-lg font-semibold mb-4">Analysis Parameters</h3>
 
-          {/* Info Text */}
-          <div className="mt-6 text-center text-white/50 text-sm">
-            <p>AI model calculating planet probability scores (0-100%)</p>
-            <p className="mt-1">Filtering targets above {threshold}% confidence threshold</p>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-black/30 rounded-lg p-4">
+                  <div className="text-white/60 text-sm mb-1">Total Targets</div>
+                  <div className="text-2xl font-bold text-blue-400">{parsedData.length || 0}</div>
+                </div>
+
+                <div className="bg-black/30 rounded-lg p-4">
+                  <div className="text-white/60 text-sm mb-1">Threshold</div>
+                  <div className="text-2xl font-bold text-purple-400">{threshold}%</div>
+                </div>
+              </div>
+
+              {progress >= 85 && (
+                <div className="bg-black/30 rounded-lg p-4 animate-pulse">
+                  <div className="text-white/60 text-sm mb-1">Candidates Found</div>
+                  <div className="text-3xl font-bold text-green-400">{getOverThresholdCount()}</div>
+                </div>
+              )}
+            </div>
+
+            {/* Info Text */}
+            <div className="mt-6 text-center text-white/50 text-sm">
+              <p>AI model calculating planet probability scores (0-100%)</p>
+              <p className="mt-1">Filtering targets above {threshold}% confidence threshold</p>
+            </div>
           </div>
         </div>
-      </div>
+      </>
     );
   }
 
   // Always show visualizer (demo mode if no data uploaded)
 
   return (
-    <div data-visualizer className="fixed inset-0 bg-black text-white">
-      {/* Desktop Layout: Split View */}
-      <div className="hidden lg:grid lg:grid-cols-[2fr,1fr] h-full w-full">
-        {/* Left: 3D Visualization */}
-        <div className="relative h-full w-full overflow-hidden">
-          <div
-            className="absolute inset-0 bg-gradient-to-br from-black via-[#1f1925] to-black pointer-events-none"
-            aria-hidden="true"
-          />
-          {isDesktop && <ThreeScene />}
+    <>
+      <Navbar />
+      <div data-visualizer className="fixed inset-0 bg-black text-white pt-24">
+        {/* Desktop Layout: Split View */}
+        <div className="hidden lg:grid lg:grid-cols-[2fr,1fr] h-full w-full">
+          {/* Left: 3D Visualization */}
+          <div className="relative h-full w-full overflow-hidden">
+            <div
+              className="absolute inset-0 bg-gradient-to-br from-black via-[#1f1925] to-black pointer-events-none"
+              aria-hidden="true"
+            />
+            {isDesktop && <ThreeScene />}
+          </div>
+
+          {/* Right: HUD Control Panel */}
+          <div className="bg-black/50 backdrop-blur-md border-l border-white/10 overflow-y-scroll h-full relative z-10">
+            <div className="p-6 space-y-6">
+              <h2 className="text-2xl font-bold">Control Panel</h2>
+              <SummaryCard />
+              <CandidatesList />
+            </div>
+          </div>
         </div>
 
-        {/* Right: HUD Control Panel */}
-        <div className="bg-black/50 backdrop-blur-md border-l border-white/10 overflow-y-scroll h-full relative z-10">
-          <div className="p-6 space-y-6">
-            <h2 className="text-2xl font-bold">Control Panel</h2>
+        {/* Mobile Layout: Stacked */}
+        <div className="lg:hidden h-full w-full flex flex-col">
+          <div className="relative h-[50vh] w-full overflow-hidden">
+            <div
+              className="absolute inset-0 bg-gradient-to-br from-black via-[#1f1925] to-black pointer-events-none"
+              aria-hidden="true"
+            />
+            {!isDesktop && <ThreeScene />}
+          </div>
+          <div className="flex-1 bg-black/50 backdrop-blur-md p-4 space-y-4 overflow-y-auto">
+            <h2 className="text-xl font-bold">Control Panel</h2>
             <SummaryCard />
             <CandidatesList />
           </div>
         </div>
-      </div>
 
-      {/* Mobile Layout: Stacked */}
-      <div className="lg:hidden h-full w-full flex flex-col">
-        <div className="relative h-[50vh] w-full overflow-hidden">
-          <div
-            className="absolute inset-0 bg-gradient-to-br from-black via-[#1f1925] to-black pointer-events-none"
-            aria-hidden="true"
-          />
-          {!isDesktop && <ThreeScene />}
-        </div>
-        <div className="flex-1 bg-black/50 backdrop-blur-md p-4 space-y-4 overflow-y-auto">
-          <h2 className="text-xl font-bold">Control Panel</h2>
-          <SummaryCard />
-          <CandidatesList />
-        </div>
+        {/* Star Info Panel (Modal) */}
+        <StarInfoPanel />
       </div>
-
-      {/* Star Info Panel (Modal) */}
-      <StarInfoPanel />
-    </div>
+    </>
   );
 };
 
