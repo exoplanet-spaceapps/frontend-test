@@ -136,7 +136,11 @@ const Visualizer = () => {
       {/* Desktop Layout: Split View */}
       <div className="hidden lg:grid lg:grid-cols-[2fr,1fr] h-full w-full">
         {/* Left: 3D Visualization */}
-        <div className="relative h-full w-full bg-gradient-to-br from-black via-[#1f1925] to-black overflow-hidden">
+        <div className="relative h-full w-full overflow-hidden">
+          <div
+            className="absolute inset-0 bg-gradient-to-br from-black via-[#1f1925] to-black pointer-events-none"
+            aria-hidden="true"
+          />
           {isDesktop && <ThreeScene />}
         </div>
 
@@ -153,7 +157,11 @@ const Visualizer = () => {
 
       {/* Mobile Layout: Stacked */}
       <div className="lg:hidden h-full w-full flex flex-col">
-        <div className="h-[50vh] w-full bg-gradient-to-br from-black via-[#1f1925] to-black">
+        <div className="relative h-[50vh] w-full overflow-hidden">
+          <div
+            className="absolute inset-0 bg-gradient-to-br from-black via-[#1f1925] to-black pointer-events-none"
+            aria-hidden="true"
+          />
           {!isDesktop && <ThreeScene />}
         </div>
         <div className="flex-1 bg-black/50 backdrop-blur-md p-4 space-y-4 overflow-y-auto">

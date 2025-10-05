@@ -51,6 +51,16 @@ const ThreeScene = () => {
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    // Make sure the canvas covers the mount container so it isn't hidden under overlays
+    Object.assign(renderer.domElement.style, {
+      position: 'absolute',
+      inset: '0px',
+      width: '100%',
+      height: '100%',
+      display: 'block'
+    });
+
     mountRef.current.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
@@ -248,6 +258,24 @@ const ThreeScene = () => {
 
     window.addEventListener('resize', handleResize);
 
+    let resizeObserver;
+    if (typeof ResizeObserver !== 'undefined') {
+      resizeObserver = new ResizeObserver(entries => {
+        for (const entry of entries) {
+          const { width, height } = entry.contentRect;
+          if (height === 0 || width === 0) {
+            continue;
+          }
+
+          camera.aspect = width / height;
+          camera.updateProjectionMatrix();
+          renderer.setSize(width, height);
+        }
+      });
+
+      resizeObserver.observe(mountRef.current);
+    }
+
     // Animation loop
     let animationId;
     const animate = () => {
@@ -260,6 +288,9 @@ const ThreeScene = () => {
     // Cleanup
     return () => {
       cancelAnimationFrame(animationId);
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      }
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('flyToStar', handleFlyToStar);
       renderer.domElement.removeEventListener('click', handleClick);
@@ -274,7 +305,7 @@ const ThreeScene = () => {
     <div
       ref={mountRef}
       className="w-full h-full"
-      style={{ position: 'relative', pointerEvents: 'auto' }}
+      style={{ position: 'relative', pointerEvents: 'auto', overflow: 'hidden' }}
     />
   );
 };
