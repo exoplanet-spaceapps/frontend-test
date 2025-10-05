@@ -45,8 +45,6 @@ const App = () => {
               <Navbar />
               <Hero />
             </div>
-            <LandingPage />
-            <Footer5 />
           </>
         } />
         <Route path="/byod" element={
